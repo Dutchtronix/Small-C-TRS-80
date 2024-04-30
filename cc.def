@@ -1,0 +1,335 @@
+/*
+** Small-C Compiler Version 2.0
+**
+** Copyright 1982 J. E. Hendrix
+**
+** Implemented TRS-80 Mod I Mikrorie - Jan de Rie
+**
+** Macro Definitions
+*/
+
+#define MSC
+
+/*
+** compile options
+*/
+#define BUGFIXES 1
+#define EXPRARGS 1
+#define NEWHEAP 1
+#define XTRAPEEP 1
+/* #define OTHERASM 1 */
+
+/*
+** machine dependent parameters
+*/
+#define BPW     2   /* bytes per word */
+#define BPD		8	/* bytes per double */
+#define LBPW    1   /* log2(BPW) */
+#define SBPC    1   /* stack bytes per character */
+#define ERRCODE 7   /* op sys return code */
+#define NEWLINE	13
+
+#ifdef MSC
+#define EXTMARKER '.'
+#define DEFSRCEXT ".c"
+#define DEFOUTEXT ".mac"
+#define DEFAOUTEXT ".asm"
+#define ERRFILNAM "C21ERRS.DAT"
+#define BPI sizeof(int)
+#else
+#define EXTMARKER '/'
+#define DEFSRCEXT "/C"
+#define DEFOUTEXT "/MAC"
+#define DEFAOUTEXT "/ASM"
+#define ERRFILNAM "C21ERRS/DAT"
+#define BPI BPW
+#endif
+
+/*
+** symbol table format
+*/
+#define IDENT    0
+#define TYPE     1
+#define CLASS    2
+#define OFFSET   3
+#define NAME     5
+#define OFFSIZE (NAME-OFFSET)
+#define SYMAVG  10
+#define SYMMAX  14
+
+/*
+** symbol table parameters
+*/
+#define NUMLOCS   40
+#define STARTLOC  symtab
+#define ENDLOC   (symtab+(NUMLOCS*SYMAVG))
+#define STARTGLB  ENDLOC
+#define ENDGLB   (ENDLOC+((numglbs-1)*SYMMAX))
+#define SYMTBSZ   NUMLOCS*SYMAVG + numglbs*SYMMAX /* 3050 */
+ 
+/*
+** System wide name size (for symbols)
+*/
+#define NAMESIZE 9
+#define NAMEMAX  8
+ 
+/*
+** possible entries for "IDENT"
+*/
+#define LABEL    0
+#define VARIABLE 1
+#define ARRAY    2
+#define POINTER  3
+#define FUNCTION 4
+#define PTRARRAY 5
+
+/*
+** lval fields
+*/
+#define LSYMPTR 0
+#define INDTYPE 1
+#define PATYPE 2		/* Pointer or Array */
+#define CEXPR 3
+#define CVALUE 4
+#define USEDE 5
+#define LBINOP 6
+#define OPER0 7
+#define LVALSIZE 8
+
+/*
+** possible entries for "TYPE"
+**    low order 2 bits make type unique within length
+**    high order bits give length of object
+*/
+/*      LABEL   0 */
+#define CCHAR   (1<<2)
+#define CINT    (BPW<<2)
+#define CDOUBLE (8<<2)
+ 
+/*
+** possible entries for "CLASS"
+*/
+/*      LABEL     0 */
+#define STATIC    1
+#define AUTOMATIC 2
+#define EXTERNAL  3
+#define AUTOEXT	  4
+
+/*
+** "switch" table
+*/
+#define SWSIZ   (2*BPW)
+#define SWTABSZ (50*SWSIZ)
+ 
+/*
+** "while" statement queue
+*/
+#define WQTABSZ  30
+#define WQSIZ     3
+#define WQMAX   (wq+WQTABSZ-WQSIZ)
+ 
+/*
+** entry offsets in while queue
+*/
+#define WQSP    0
+#define WQLOOP  1
+#define WQEXIT  2
+ 
+/*
+** literal pool
+*/
+#define LITABSZ 1000
+#define LITMAX  (LITABSZ-1)
+
+/*
+** macro (define) pool
+*/
+#define MACNSIZE	(numdefs*(NAMESIZE+2))
+#define MACQSIZE	(numdefs * 5)
+#define MACMAX		(MACQSIZE - 1)
+/*
+** input line
+*/
+#define MAXLEVEL  3
+#define LINEMAX  100
+#define LINESIZE 101
+
+/*
+** command line
+*/
+/* #define MAXARGS  32     /* maximum number of option arguments */
+
+/*
+** output staging buffer size
+*/
+#define STAGESIZE   1994
+#define STAGELIMIT  (STAGESIZE-1)
+
+#ifdef OTHERASM
+/*
+** assembler output file format
+*/
+#define M80 0
+#define EDTASM 1
+#define INSASM 3
+#define MAXOFFSET 287
+#endif
+/* #define MAXDEFS 4000 */
+
+/*
+** error messages file
+*/
+#ifdef MSC
+#define MESSSIZE 41
+#else
+#define MESSSIZE 40
+#endif
+
+#define MAXERR 60
+
+/*
+** statement types
+*/
+#define STIF      1
+#define STWHILE   2
+#define STRETURN  3
+#define STBREAK   4
+#define STCONT    5
+#define STASM     6
+#define STEXPR    7
+#define STDO      8 /* compile "do" logic */
+#define STFOR     9 /* compile "for" logic */
+#define STSWITCH 10 /* compile "switch/case/default" logic */
+#define STCASE   11
+#define STDEF    12
+#define STGOTO   13 /* compile "goto" logic */
+#define	STLABEL	 14
+
+#ifdef EXPRARGS
+#define ARG4 0
+#define ARG5 1
+#define ARG6 2
+#define ARG7 3
+#define ARG8 4
+#define ARG9 5
+#define ARG10 6
+#define ARG11 7
+#define ARG12 8
+#define ARG13 9
+#endif
+
+/*
+** int-code definitions
+*/
+/* thise int-codes are entries in the cclib run-time */
+#define CCGCHAR	  1		/* call ccgchar */
+#define CCGINT	  2		/* call ccgint */
+#define CCPINT	  3		/* call ccpint */
+#define CCSWITCH  4		/* call ccswit */
+#define CCSXT	  5		/* call ccsxt */
+
+#define CCAND	  10	/* call ccand */
+#define CCASL	  11	/* call ccasl */
+#define CCASR	  12	/* call ccasr */
+#define CCCOM	  13	/* call cccom */
+#define CCDIV	  14	/* call ccdiv */
+#define CCEQ	  15	/* call cceq */
+#define CCGE	  16	/* call ccge */
+#define CCGT	  17	/* call ccgt */
+#define CCLE	  18	/* call ccle */
+#define CCLT	  19	/* call cclt */
+#define CCNE	  20	/* call ccne */
+#define CCNEG	  21	/* call ccneg */
+#define CCMULT	  22	/* call ccmult */
+#define CCOR	  23	/* call ccor */
+#define CCULT	  24	/* call ccult */
+#define CCULE	  25	/* call ccule */
+#define CCUGT	  26	/* call ccugt */
+#define CCUGE	  27	/* call ccuge */
+#define CCXOR	  28	/* call ccxor */
+#define CCSUB	  29	/* call ccsub  */
+#define CCLNEG	  30	/* call cclneg */
+#define CCUASR	  31	/* call ccuasr */
+#define CCDCAL	  32	/* call ccdcal i.e. jp (HL) */
+
+#define CCDECI	  39	/* call ccdeci */
+#define CCINCI	  44	/* call ccinci */
+#define CCPDPI	  46	/* call ccpdpi */
+
+/* these int-codes need no operand */
+#define NOOP		128		/* 0x80 dummy for labels etc. */
+#define LDAM		129		/* 0x81 ld a,(hl) */
+#define LDLA		130		/* 0x82 ld l,a */
+#define LDAL		131		/* 0x83 ld a,l */
+#define LDIDA		132		/* 0x84 ld (de),a */
+#define LDAH		133		/* 0x85 ld a,h */
+#define ORA			134		/* 0x86 or a */
+#define ORL			135		/* 0x87 or l */
+#define ORH			136		/* 0x88 or h */
+#define XORA		137		/* 0x89 xor a */
+#define TSTHL		138		/* 0x8A ld a,h  or l */
+#define TSTSHL		139		/* 0x8B xor a   or h */
+#define DECHL		140		/* 0x8C dec hl */
+#define INCHL		141		/* 0x8D inc hl */
+#define LDHIM		142		/* 0x8E ld h,(hl) */
+#define ADDHLSP		143		/* 0x8F add hl,sp */
+#define PUSHHL		144		/* 0x90 push hl */
+#define EXSPHL		145		/* 0x91 ex (sp),hl */
+#define JPIHL		146		/* 0x92 jp (hl) */
+#define LDSPHL		147		/* 0x93 ld sp,hl */
+#define ADDHLHL		148		/* 0x94 add hl,hl */
+#define ADDHLDE		149		/* 0x95 add hl,de */
+#define SBCHLDE		150		/* 0x96 sbc hl,de */
+#define ADDHLBC		151		/* 0x97 add hl,bc */
+#define EXDEHL		152		/* 0x98 ex de,hl */
+#define POPHL		153		/* 0x99 pop hl */
+#define LDDH		154		/* 0x9A ld d,h */
+#define LDEL		155		/* 0x9B ld e,l */
+#define POPDE		156		/* 0x9C pop de */
+#define PUSHDE		157		/* 0x9D push de */
+#define POPBC		158		/* 0x9E pop bc */
+#define PUSHBC		159		/* 0x9F push bc */
+#define INCSP		160		/* 0xA0 inc sp */
+#define DECSP		161		/* 0xA1 dec sp */
+#define RET			162		/* 0XA2 ret */
+#define CCRST18		163		/* 0xA3 use rst 18H: cmp DE and HL on TRS-80 */
+#define LDLE		164		/* 0xA4 ld l,e */
+
+
+/* these int-codes expect a byte-value */
+#define LDAB		180		/* ld a,byte-value */
+#define LDHB		181		/* ld h,byte-value */
+
+/* these int-codes expect a word-value */
+#define LDHLW		190		/* 0xBE ld hl,word-value */
+#define LDDEW		191		/* 0xBF ld de,word-value */
+#define LDBCW		192		/* 0xC0 ld bc,word-value */
+#define DEFWRD		193		/* 0xC1 defined word-value */
+#define DEFLWRD		194		/* 0xC2 defined label */
+#define LITERAL		195		/* 0xC3 in-line assembler text */
+
+/* these int-codes expect a symbol table ptr */
+#define LDAIS		205		/* 0xCD ld a,(symbol) */
+#define LDIAS		206		/* 0xCE ld (symbol),a */
+#define FCALL		207		/* 0xCF call function */
+#define LDHLIS		208		/* 0xD0 ld hl,(symbol) */
+#define LDIHLS		209		/* 0xD1 ld (symbol),hl */
+#define LDHLS		210		/* 0xD2 ld hl,symbol */
+#define LDDES		211		/* 0xD3 ld de,symbol */
+#define DEFENT		212		/* 0xD4 symbol:: */
+
+/* these int-codes expect a label (=word-value) */
+#define JPL			220		/* 0xDC jp label */
+#define JPZL		221		/* 0xDD jp z,label */
+#define JPNZL		222		/* 0xDE jp nz,label */
+#define JPPL		223		/* 0xDF jp p,label */
+#define JPML		224		/* 0xE0 jp m,label */
+#define JRZL		225		/* 0xE1 jr z,label */
+#define LDHLL		226		/* 0xE2 ld hl,label */
+#define DEFLAB		227		/* 0xE3 label:: */
+
+/* these int-codes expect a label and a word-offset */
+#define LDHLLO		235		/* 0xEB ld hl,label+offset */
+
+#define WILD		255		/* 0xFF matches any byte value */
+
