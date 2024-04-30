@@ -3,7 +3,7 @@
 **
 ** Copyright 1982 J. E. Hendrix
 **
-** Implemented TRS-80 Mod I Mikrorie - Jan de Rie
+** Implemented TRS-80 Mod I V2.1B Dutchtronix 2024
 **
 ** Part 2
 */
