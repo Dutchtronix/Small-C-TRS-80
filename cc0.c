@@ -15,9 +15,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#endif
-
 #include "ccint.h"
+#else
+#include "ccint/h"
+#endif
 
 /*
 ** Global Data Storage
@@ -25,15 +26,15 @@
 */
 char
 	cversie[9] = "2.1B.003\0", /* for identification */
-	headers = YES,		/* monitor function headers? */
-	pause = YES,		/* pause for operator on errors? */
+	headers = TRUE,		/* monitor function headers? */
+	pause = TRUE,		/* pause for operator on errors? */
 #ifdef OTHERASM
 	outform = M80,		/* assembler output format */
 #endif
 	assext[5] = DEFOUTEXT,	/* default output file extension */
-	ctext = NO,			/* non-zero to output c-source */
-	escape = '\\',		/* escape character */
-	fdebug = NO			/* print debug information? */
+	ctext = FALSE,			/* non-zero to output c-source */
+	escape = '\\',			/* escape character */
+	fdebug = FALSE			/* print debug information? */
 #ifdef OTHERASM
 	,
 	linenum[6] = "\260\260\260\260\261\040";
@@ -121,7 +122,7 @@ char
 	 errflag = 0,				/* non-zero after 1st error in statement */
 	 errcount = 0,				/*count of errors */
 	 eofstatus = 0,				/* set non-zero on final input eof */
-	 files = NO,			    /* non-zero if file list specified on cmd line */
+	 files = FALSE,			    /* non-zero if file list specified on cmd line */
 	 filearg = 0,				/* cur file arg index */
 	 lastst,					/* last executed statement type */
 	 gsymend,					/* end of global symbol table */
@@ -165,7 +166,6 @@ char rseq4[6] = {5, POPBC, POPHL, PUSHHL, PUSHBC, NOOP };
 char rseq5[7] = {6, CCINCI, NOOP, NOOP, NOOP, NOOP, NOOP };
 char rseq6[7] = {6, CCDECI, NOOP, NOOP, NOOP, NOOP, NOOP };
 
-#ifdef XTRAPEEP
 #ifdef BADPEEP
 /* Fail. HL may be tested later */
 char seqw1[2] = { CCGCHAR, LDAL };
@@ -188,7 +188,6 @@ char rseqw5[7] = {6, NOOP, NOOP, CCRST18, JPZL, WILD, WILD };
 char rseqw6[7] = {6, NOOP, NOOP, CCRST18, JPNZL, WILD, WILD };
 char rseqw8[6] = {5, LDHB, 0, NOOP, NOOP, NOOP };
 char rseqw9[5] = {4, LDLE, LDHB, 0, NOOP };
-#endif
 
 /*
 ** This table starts at intcode NOP = 128

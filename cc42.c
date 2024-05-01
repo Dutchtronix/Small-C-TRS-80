@@ -319,30 +319,6 @@ void uasr()
 	outcode(CCUASR);
 }
 
-#ifndef XTRAPEEP
-/*
-** test and replace an int_ops string
-*/
-subst(ptraddress, source, replacement) char *ptraddress, *source, *replacement;
-{
-	int len1, len2;
-	cptr = ptraddress;
-	cptr2 = source;
-	len1 = *replacement;
-	while (len1--) {
-		if (*cptr++ != *cptr2++)
-			return FALSE;
-	}
-	/* match, substitute */
-	len1 = len2 = *replacement++;
-	cptr2 = replacement + len1;
-	for (; len1; len1--)
-		*--cptr = *--cptr2;
-	return len2;
-}
-
-#else
-
 /*
 ** test and replace an int_ops string with wildcards
 ** wildcard bytes must be in same relative location as
@@ -380,7 +356,6 @@ subst(ptraddress, source, replacement, wildok)
 	}
 	return len2;
 }
-#endif
 
 void op_error()
 {
@@ -550,7 +525,7 @@ void peephole(ptr) char *ptr;
 		if (inlabel) {
 			inlabel = FALSE;
 			if ((int_op == DEFLAB) || (int_op == LITERAL)) {
-				labelform(NO); prnum();
+				labelform(FALSE); prnum();
 			}
 			else {
 #ifdef OTHERASM

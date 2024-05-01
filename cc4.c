@@ -13,10 +13,10 @@
 #ifdef MSC
 #include <stdio.h>
 #include <stdlib.h>
-#endif
-
 #include "ccint.h"
-
+#else
+#include "ccint/h"
+#endif
 
 extern char						/* from part 0 */
 	fdebug, headers, pause,
@@ -56,14 +56,11 @@ extern char
 	seq1[6], seq2[5], seq3[6], seq4[5], seq5[6], seq6[6],
 	rseq1[7], rseq2[6], rseq3[7], rseq4[6], rseq5[7], rseq6[7],
 	*intone[], *inttwo[], *intthree[]
-#ifdef XTRAPEEP
 #ifdef BADPEEP
 	,seqw1[2], seqw2[4], rseqw1[3], rseqw2[5], seqw7[4], rseqw7[5]
 #endif
 	,seqw3[6], seqw4[6], seqw5[6], seqw6[6], seqw8[5], seqw9[4],
-	rseqw3[7], rseqw4[7], rseqw5[7], rseqw6[7], rseqw8[6], rseqw9[5]
-#endif
-	;
+	rseqw3[7], rseqw4[7], rseqw5[7], rseqw6[7], rseqw8[6], rseqw9[5];
 
 #ifdef MSC
 extern int						/* from part 2 */

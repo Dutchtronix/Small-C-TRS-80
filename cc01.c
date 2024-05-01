@@ -37,7 +37,7 @@ askon:
 				case 'I': { outform = INSASM; strcopy(DEFAOUTEXT, assext);  goto askon; }
 #endif
 				case '@': { escape = '@';  goto askon; }
-				case '%': { fdebug = YES; goto askon; }
+				case '%': { fdebug = TRUE; goto askon; }
 			}
 		}
 		if (letter == 'Z') {
@@ -441,9 +441,9 @@ void openin()
 {
 	while (++filearg < argcs) {
 		if (*(cptr = argvs[filearg]) == '-') continue;
-		strcopy(cptr, pline);	/* copy argument */
+		strcopy(cptr, pline);			/* copy argument */
 		if (!outfile)
-			getout(pline);		/* remove eventual output file */
+			getout(pline);				/* remove eventual output file */
 		extension(pline, DEFSRCEXT);	/* default extension */
 		if (curlevel != 0) {
 			newerror(2); exit(ERRCODE);
@@ -451,11 +451,11 @@ void openin()
 		if ((input[0] = fopen(pline, "r")) == NULL)
 			opnerr(pline);
 		chkasm();
-		if (files == YES) kill();	/* not first time */
-		files = YES;
+		if (files == TRUE) kill();		/* not first time */
+		files = TRUE;
 		return;
 	}
-	eofstatus = YES; kill();
+	eofstatus = TRUE; kill();
 }
 
 /*
@@ -539,7 +539,6 @@ void initheap()
 {
 	cchpsize = 10000;
 #ifdef MSC
-	printf("NEWHEAP Active\n");
 	ccheap = malloc(cchpsize);
 	if (NULL == ccheap) {
 		newerror(54);
@@ -652,103 +651,9 @@ NoMemErr:
 MSGNOMEM: db "no memory", 13, 0
 #endasm
 }
+#endif		/* MSC */
 
-#endif
-
-#else
-
-void initheap()
-{}
-
-#ifdef MSC
-ccalloc(n) int n;
-{
-	char* p;
-	p = malloc(n);
-	if (NULL == p) {
-		newerror(54);
-		exit(ERRCODE);
-	}
-	memset(p, 0, n);
-	if (fdebug) {
-		printf("ccalloc %d bytes: 0x%x\n", n, (unsigned int)p);
-	}
-	return p;
-}
-
-ccfree(p) char* p;
-{
-	if (fdebug) {
-		printf("ccfree 0x%x\n", p);
-	}
-	free(p);
-}
-#else
-ccalloc(n) int n;
-{
-	char *p;
-	p = alloc2(n);
-	memset(p, 0, n);
-	return p;
-}
-
-alloc2(n) int n;
-{
-#asm
-	POP	BC
-	POP	HL
-	PUSH	HL
-	PUSH	BC
-	PUSH	HL
-	CALL	MALLOC##
-	POP	BC
-	LD	A, H
-	OR	L
-	RET	NZ
-NoMemErr:
-	LD	HL, stderr
-	PUSH	HL
-	LD	HL, MSGNOMEM
-	PUSH	HL
-	CALL	FPUTS
-	JP	exit
-MSGNOMEM: db "no memory",13,0 
-
-#endasm
-}
-
-ccfree(p) char* p;
-{
-#asm
-	JP	cfree##
-#endasm
-}
-#endif
-
-	
-ccavail()
-#ifdef MSC
-{}
-#else
-{
-#asm
-	LD	HL, (CURHP##)
- 	LD	DE, 32H
- 	ADD	HL, DE
- 	EX	DE, HL
- 	LD	HL, 0
- 	ADD	HL, SP
-	CALL	CCC27##
- 	LD	A, H
- 	OR	L
- 	RET	Z
- 	PUSH	HL
- 	JR	NoMemErr
-#endasm
-}
-#endif
-
-#endif
+#endif		/* NEWHEAP */
 
 #ifndef MSC
 memset(s, c, cnt) char* s; int c, cnt;

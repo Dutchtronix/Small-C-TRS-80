@@ -20,8 +20,6 @@ typedef uint8_t BOOL;
 ** stdio/h -- header for standard i/o library
 */
 #define ERR -2
-#define YES 1
-#define NO 0
 #define FALSE 0
 #define TRUE 1
 #define CR 13

@@ -142,7 +142,11 @@ void declglb(vartype, varclass)  int vartype, varclass; {
 		  j=VARIABLE;
 		  k=1;
 		}
-		if (symname(ssname, YES)==0) illname();
+#ifdef BUGFIXES
+		if (symname(ssname)==0) illname();
+#else
+		if (symname(ssname, TRUE) == 0) illname();
+#endif
 		if(findglb(ssname)) multidef(ssname);
 		if (match(")"));				/* 03 */
 		if(match("()")) j=FUNCTION;
@@ -191,7 +195,11 @@ void declloc(vartype)  int vartype;  {
 		if(endst()) return;
 		if(match("*")) j=POINTER;
 		else j=VARIABLE;
-		if (symname(ssname, YES)==0) illname();
+#ifdef BUGFIXES
+		if (symname(ssname)==0) illname();
+#else
+		if (symname(ssname, TRUE) == 0) illname();
+#endif
 		/* no multidef check, block-locals are together */
 		k=BPW;
 		if (vtyp2 == CDOUBLE) {
@@ -379,7 +387,12 @@ void newfunc()  {
 		--ptr;
 		sout(ptr, stderr);
 	}
-	if (symname(ssname, YES)==0) {
+#ifdef BUGFIXES
+	if (symname(ssname)==0)
+#else
+	if (symname(ssname, TRUE) == 0)
+#endif
+	{
 		newerror(10);
 		kill();					/* invalidate line */
 		return;
@@ -400,7 +413,12 @@ void newfunc()  {
 	argstk=2;               	/* stack offsets */
 	while(!match(")")) {		/* then count args */
 		/* any legal name bumps arg count */
-		if(symname(ssname, YES)) {
+#ifdef BUGFIXES
+		if(symname(ssname))
+#else
+		if (symname(ssname, TRUE))
+#endif
+		{
 			if(findloc(ssname)) multidef(ssname);
 			else {
 				addsym(ssname, VARIABLE, CINT, argstk, &locptr, AUTOMATIC);
@@ -456,7 +474,11 @@ void doargs(t) int t; {
 	do {
 		if (match("*") || match("(*")) j = POINTER;
 		else j=VARIABLE;
-		if((legalname=symname(ssname, YES))==0) illname();
+#ifdef BUGFIXES
+		if((legalname=symname(ssname))==0) illname();
+#else
+		if ((legalname = symname(ssname, TRUE)) == 0) illname();
+#endif
 		/* is it a pointer? */
 		if (match(")")) ;
 		if (match("()")) ;

@@ -188,7 +188,7 @@ primary(lval)  int *lval;
 		return k;
 	}
 	memset(lval, 0, LVALSIZE*BPI);
-	if (symname(sname, YES)) {
+	if (symname(sname)) {	/* , TRUE)) { */
 		if (symptr = findloc(sname)) {
 			if(symptr[IDENT]==LABEL) {
 				experr();
@@ -309,5 +309,5 @@ char *symptr;	/* symbol table entry or 0 (HL is function ptr in that case */
 	if (symptr) docall(symptr);
 	else callstk();
 	
-	csp=modstk(csp+(nargs << 1), YES);
+	csp=modstk(csp+(nargs << 1), TRUE);
 }

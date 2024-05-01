@@ -23,7 +23,7 @@ statement() {
 	else {
 		if(declared >= 0) {
 			if(ncmp > 1) nogo=declared; /* disable goto if any */
-			csp=modstk(csp - declared, NO);
+			csp=modstk(csp - declared, FALSE);
 			declared = -1;
 		}
 		if(match("{"))               compound();
@@ -75,7 +75,7 @@ void compound()  {
 	/* delete local variable space */
 	/* this prevents redundant code to be generated */
 	if ((lastst != STRETURN) && (lastst != STGOTO))
-		modstk(savcsp, NO);
+		modstk(savcsp, FALSE);
 	csp = savcsp;
 	cptr=savloc;            	/* retain labels */
 	while(cptr < locptr) {
@@ -94,7 +94,7 @@ void compound()  {
 void doif()  {
 	int flab1,flab2;
 	flab1=getlabel(); 			/* get label for false branch */
-	dotest(flab1, YES); 			/* get expression, and branch false */
+	dotest(flab1, TRUE); 			/* get expression, and branch false */
 	statement();     			/* if true, do a statement */
 	if (amatch("ELSE",4)==0) {  /* if...else ? */
 		/* simple "if"...print false label */
@@ -123,7 +123,7 @@ void dowhile()
 	int wq[4];              	/* allocate local queue */
 	addwhile(wq);           	/* add entry to queue for "break" */
 	postlabel(wq[WQLOOP], TRUE); /* loop label */
-	dotest(wq[WQEXIT], YES);  	/* see if true */
+	dotest(wq[WQEXIT], TRUE);  	/* see if true */
 	statement();            	/* if so, do a statement */
 	jump(wq[WQLOOP]);       	/* loop to label */
 	postlabel(wq[WQEXIT], TRUE); /* exit label */
@@ -137,7 +137,7 @@ void dodo() {
 	statement();
 	needtoken("WHILE");
 	postlabel(wq[WQLOOP], TRUE);
-	dotest(wq[WQEXIT], YES);
+	dotest(wq[WQEXIT], TRUE);
 	jump(top);
 	postlabel(wq[WQEXIT], TRUE);
 	delwhile();
@@ -156,7 +156,7 @@ void dofor() {
 	}
 	postlabel(lab1), TRUE;
 	if(!match(";")) {
-		dotest(wq[WQEXIT], NO); 	/* expr 2 */
+		dotest(wq[WQEXIT], FALSE); 	/* expr 2 */
 		ns();
 	}
 	jump(lab2);
@@ -222,7 +222,11 @@ void dodefault() {
 void dogoto() {
 	if(nogo > 0) newerror(22);
 	else noloc = 1;
-	if(symname(ssname, YES)) jump(addlabel());
+#ifdef BUGFIXES
+	if(symname(ssname)) jump(addlabel());
+#else
+	if (symname(ssname, TRUE)) jump(addlabel());
+#endif
 	else newerror(23);
 	ns();
 }
@@ -231,7 +235,12 @@ dolabel() {
 	char *savelptr;
 	blanks();
 	savelptr=lptr;
-	if(symname(ssname, YES)) {
+#ifdef BUGFIXES
+	if(symname(ssname))
+#else
+	if (symname(ssname, TRUE))
+#endif
+	{
 		if(gch()==':') {
 			postlabel(addlabel(), TRUE);
 			return 1;
@@ -253,16 +262,16 @@ addlabel()  {
 void doreturn()  {
 	if(endst()==0) {
 		doexpr();
-		modstk(0, YES);
+		modstk(0, TRUE);
 	}
-	else modstk(0, NO);
+	else modstk(0, FALSE);
 	doret();
 }
 
 void dobreak()  {
 	int *ptr;
 	if ((ptr=readwhile(wqptr))==0) return; /* no loops open */
-	modstk((ptr[WQSP]), NO);	/* clean up stk ptr */
+	modstk((ptr[WQSP]), FALSE);	/* clean up stk ptr */
 	jump(ptr[WQEXIT]);  		/* jump to exit label */
 }
 
@@ -273,7 +282,7 @@ void docont()  {
 		if ((ptr=readwhile(ptr))==0) return; /* no loops open */
 		if (ptr[WQLOOP]) break;
 	}
-	modstk((ptr[WQSP]), NO);	/* clean up stk ptr */
+	modstk((ptr[WQSP]), FALSE);	/* clean up stk ptr */
 	jump(ptr[WQLOOP]);			/* jump to loop label */
 }
 

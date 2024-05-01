@@ -8,13 +8,6 @@
 ** Part 2
 */
 
-
-/*
-** serial number check
-*/
-check2()
-{}
-
 findglb(sname)  char *sname; {
 	if(gsearch(sname))
 		return symptr;
@@ -106,7 +99,13 @@ void putint(i, addr, len) char *addr; int i, len; {
 /*
 ** test if next input string is legal symbol name
 */
-symname(sname, ucase) char *sname; int ucase; {
+#ifdef BUGFIXES
+symname(sname) char* sname;
+#else
+symname(sname, ucase) char *sname; int ucase;
+#endif
+{
+
 	blanks();
 #ifdef UNCLEARBUGFIXES
 	if (alpha(ch) == 0) return (*sname = 0);	/* causes failure */
@@ -436,7 +435,7 @@ void ifline() {
 			  ++iflevel;
 			  if(skiplevel) continue;
 			  blanks();
-			  symname(msname, NO);
+			  symname(msname); /*, FALSE); */
 			  if (msearch(msname) == 0) { skiplevel = iflevel; }
 			  continue;
 		}
@@ -444,7 +443,7 @@ void ifline() {
 			++iflevel;
 			if(skiplevel) continue;
 			blanks();
-			symname(msname, NO);
+			symname(msname); /*, FALSE); */
 			if (msearch(msname)) { skiplevel = iflevel; }
 			continue;
 		}
@@ -542,7 +541,7 @@ void preprocess()
 				gch();
 			}
 			*cptr = 0;
-			if(msearch(msname)) {
+			if(msearch(msname)) {	/* macro substitution */
 				k=*(iptr = &symptr[NAMESIZE]);
 				while(c=macq[k++]) keepch(c);
 	      }
@@ -574,7 +573,12 @@ void keepch(c)  char c;
 
 void addmac() {
 	int k;
-	if(symname(msname, NO)==0) {
+#ifdef BUGFIXES
+	if(symname(msname)==0)
+#else
+	if (symname(msname, FALSE) == 0)
+#endif
+		{
 		illname();
 		kill();
 		return;

@@ -13,10 +13,10 @@
 #ifdef MSC
 #include <stdio.h>
 #include <stdlib.h>
-#endif
-
 #include "ccint.h"
-
+#else
+#include "ccint/h"
+#endif
 
 extern char						/* from part 0 */
 	fdebug, headers, pause,

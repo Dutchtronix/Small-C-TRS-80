@@ -129,7 +129,7 @@ labelform(extrndef) int extrndef;
 	switch (outform) {
 		case M80: {
 			outbyte(':');
-			if (extrndef == YES) outbyte(':');
+			if (extrndef == TRUE) outbyte(':');
 			break;
 		}
 		case EDTASM: {
@@ -143,7 +143,7 @@ labelform(extrndef) int extrndef;
 	}
 #else
 	outbyte(':');
-	if (extrndef == YES) outbyte(':');
+	if (extrndef == TRUE) outbyte(':');
 #endif
 	nl();
 }
@@ -175,7 +175,7 @@ entry(s, labelstate) char *s;
 {
 	prnum(); symtoass(s);
 	if (labelstate == TRUE)
-		labelform(YES);			/* terminate label */
+		labelform(TRUE);			/* terminate label */
 	else {
 #ifdef OTHERASM
 		if (outform == M80)
@@ -214,23 +214,9 @@ void dodefw(val) char *val;			/* unsigned */
 }
 
 /*
-** define a byte to the assembler
-*/
-void dodefb(val) char *val;			/* unsigned */
-{
-	if (inlabel)
-		inlabel = FALSE;
-	else
-		prnum();
-	outstr("\tDEFB\t");
-	outBhex(val);
-	nl();
-}
-
-/*
 ** define storage to the assembler
 */
-dodefs(val) char *val;			/* unsigned */
+void dodefs(val) char *val;			/* unsigned */
 {
 	if (inlabel)
 		inlabel = FALSE;
@@ -314,7 +300,7 @@ void postlabel(labelnr, labelstate) int labelnr, labelstate;
 	else {
 		prnum(); printlabel(labelnr);
 		if (labelstate == TRUE)
-			labelform(NO);		/* terminate label */
+			labelform(FALSE);		/* terminate label */
 		else {
 #ifdef OTHERASM
 			if (outform == M80)

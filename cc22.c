@@ -205,14 +205,13 @@ void newerror(errvalue, text) int errvalue; char *text;
 	++errcount;
 	k = line+4;
 	while (k++ < lptr) cout(' ', stdout);
-	lout("[", stdout);
+	lout("^", stdout);
 	sout("**** ", stdout);
 	/* print expected token first */
 	if (errvalue == 47) fputs(text, stdout);
-	/* cease output generation before
-	** opening error file to save
-	** buffer space. Would like to re-use
-	** output file buffer space for error file 
+	/* cease output generation before opening error file to save
+	** buffer space. We're trying to re-use output file buffer
+	** space for error file in malloc()
 	*/
 	if (output) {
 		/*
@@ -261,13 +260,44 @@ void printerror(errnum) int errnum;
 streq(str1,str2)  char str1[],str2[];
 {
 	/* check for string equality over whole string */
-	int k;
-	k=0;
+#ifdef MSC
+	int k=0;
 	while (str2[k]) {
 		if ((str1[k])!=(str2[k])) return 0;
 		++k;
 	}
 	return k;
+#else
+#asm
+	pop	bc
+	pop	de; str1
+	pop	hl; str2
+	push hl
+	push de
+	push bc
+	ld	c, 0; k
+strloop:
+	ld	a, (hl); str2[k]
+	and a; test
+	jr	z, strout; done
+	ld	b, a; str2[k]
+	ld	a, (de); str1[k]
+	cp	b
+	jr	nz, strfout; !=
+	inc	hl; ++k
+	inc	de
+	inc	c
+	jr	strloop; continue
+strout:
+	ld	l, c; return k
+	ld	h, 0
+	ret
+strfout:
+	ld	hl, 0
+	ret
+	db	'STREQ'
+#endasm
+#endif
 }
 
 /*
@@ -279,8 +309,8 @@ streq(str1,str2)  char str1[],str2[];
 astreq(str1,str2,len)  char str1[],str2[];int len;
 {
 	/* check for string equality over first 'len' characters */
-	int k;
-	k=0;
+#ifdef MSC
+	int k=0;
 	while (k<len) {
 		if ((str1[k])!=(str2[k]))break;
 		if(str1[k] < ' ') break; /* or '\t' */
@@ -290,6 +320,70 @@ astreq(str1,str2,len)  char str1[],str2[];int len;
 	if (an(str1[k]))return 0;
 	if (an(str2[k]))return 0;
 	return k;
+#else
+#asm
+	ld	hl,6 ;&len
+	add	hl, sp
+	ld	a,(hl)
+	pop	bc
+	pop	de; str1
+	pop	hl; str2
+	push hl
+	push de
+	push bc
+	ld	b, a; len
+	ld	c, 0; k
+astrl:
+	ld	a,c
+	cp	b
+	jr	nc, astre; brif k >= len
+	ld	a, (de); str1[k]
+	cp (hl); str2[k]
+	jr	nz, astre
+	ld	a, (de); str1[k]
+	cp	' '
+	jr	c, astre
+	ld	a, (hl); str2[k]
+	cp	' '
+	jr	c, astre
+	inc	de; ++k
+	inc	hl
+	inc	c
+	jr	astrl
+astre:
+	push hl; save pstr2
+	ld	a, (de); str1[k]
+	ld	e, a; make arg
+	ld	d, 0; unneeded
+	push bc	;save c
+	push de; arg
+	call an
+	pop	de; clear arg
+	pop	bc	;restore c
+	ld	a, h;
+	or l
+	pop	hl; restore pstr2
+	jr	nz, astrf; brif TRUE
+	ld	a, (hl); str2[k]
+	ld	l, a
+	ld	h, 0; unneeded
+	push bc	;save c
+	push hl; arg
+	call an
+	pop	de; clear arg
+	pop	bc	;restore c
+	ld	a, h;
+	or l
+	jr	nz, astrf; brif TRUE
+	; return k
+	ld	l, c
+	ld	h, 0
+	ret
+astrf:
+	ld	hl, 0
+	ret
+#endasm
+#endif
 }
 
 match(lit)  char *lit;

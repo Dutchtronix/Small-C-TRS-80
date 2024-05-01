@@ -3,7 +3,7 @@
 **
 ** Copyright 1982 J. E. Hendrix
 **
-** Implemented TRS-80 Mod IV2.1B Dutchtronix 2024
+** Implemented TRS-80 Mod I V2.1B Dutchtronix 2024
 **
 ** Part 1
 */
@@ -13,9 +13,10 @@
 #ifdef MSC
 #include <stdio.h>
 #include <stdlib.h>
-#endif
-
 #include "ccint.h"
+#else
+#include "ccint/h"
+#endif
 
 extern char						/* from part 0 */
 	fdebug, headers, pause,

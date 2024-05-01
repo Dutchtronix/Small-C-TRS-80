@@ -14,9 +14,7 @@
 ** compile options
 */
 #define BUGFIXES 1
-#define EXPRARGS 1
 #define NEWHEAP 1
-#define XTRAPEEP 1
 /* #define OTHERASM 1 */
 
 /*
@@ -205,7 +203,6 @@
 #define STGOTO   13 /* compile "goto" logic */
 #define	STLABEL	 14
 
-#ifdef EXPRARGS
 #define ARG4 0
 #define ARG5 1
 #define ARG6 2
@@ -216,7 +213,6 @@
 #define ARG11 7
 #define ARG12 8
 #define ARG13 9
-#endif
 
 /*
 ** int-code definitions
