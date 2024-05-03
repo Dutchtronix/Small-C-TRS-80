@@ -98,7 +98,7 @@ m80 cc4:1=cc4
 m80 iolibcc:1=iolibcc
 <br>
 
-link cc0:1,cc1:1,cc2:1,cc3:1,cc4:1,iolibcc:1,ccnew/cmd:0-n-e
+l80 cc0:1,cc1:1,cc2:1,cc3:1,cc4:1,iolibcc:1,ccnew/cmd:0-n-e
 
 This creates a new compiler called ccnew.cmd
 
