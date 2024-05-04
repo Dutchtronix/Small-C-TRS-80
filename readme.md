@@ -1,18 +1,119 @@
 Readme file for Small-C Compiler version 2.1B for TRS-80 Model I/III running Newdos/80 2.0
 
 Emulator used: TRS80GP in Model I mode. Very complete but frequent crashes.
+<br>
+trstools to transfer files between windows and TRS-80 disks
+<br>
 Editor used: Scripsit V1.0 (patched for Newdos/80)
+<br>
 Other tools: Microsoft M80 and L80 for TRSDOS
 
+Note:
+	CCC50 currently in forlib/rel
+ 
+Compiler source Files:
+<br>
+cc/def	(remove #define MSC when compiling on a TRS-80)
+<br>
+ccint/h
+<br>
+cc0/c
+<br>
+cc01/c
+<br>
+cc1/c
+<br>
+cc11/c
+<br>
+cc12/c
+<br>
+cc2/c
+<br>
+cc21/c
+<br>
+cc22/c
+<br>
+cc3/c
+<br>
+cc31/c
+<br>
+cc32/c
+<br>
+cc33/c
+<br>
+cc4/c
+<br>
+cc41/c
+<br>
+cc42/c
+<br>
+
+When compiling on a TRS-80
+
+iolibcc/mac
+
+When cross compiling on windows using Visual C (version 2022)
+
+stdio.h
+stdlib.h
+string.h
+
+Work environment
+
+disk0 contains cmd files
+<br>
+disk1 contains compiler sources
+<br>
+disk2 is used in self-compilation
+<br>
+disk3 contains sample and utility files
+<br>
+Building the compiler (on a TRS-80)
+
+Compile Small-C sources
+
+cc cc0:1
+<br>
+cc cc1:1
+<br>
+cc cc2:1
+<br>
+cc cc3:1
+<br>
+cc cc4:1
+<br>
+
+Assemble generated /mac files and custom library
+
+m80 cc0:1=cc0
+<br>
+m80 cc1:1=cc1
+<br>
+m80 cc2:1=cc2
+<br>
+m80 cc3:1=cc3
+<br>
+m80 cc4:1=cc4
+<br>
+m80 iolibcc:1=iolibcc
+<br>
+
+l80 cc0:1,cc1:1,cc2:1,cc3:1,cc4:1,iolibcc:1,ccnew/cmd:0-n-e
+
+This creates a new compiler called ccnew.cmd
 
 
-General observations:
-Amazingly difficult to work on a TRS-80 (emulated) whan used to conveniences of Windows.
-Specially text editing very cumbersome. I've been using Scripsit since didn't want to deal
-with the linenumbers based editors. Emulator keyboard made this even more difficult.
-Debugging another nightmare. Memory limitations next problem. Unable to use Newdos/80 V2.5
-since that version reserves part of the High Memory, which doesn't leave enough memory
-for the self-compilation process.
+Cross compiling on Windows works as a WIN32 app since int and pointers are mixed.
+Make sure to add #define MSC to the beginning of file cc.def.
+Output is a .mac file which then needs to be transferred to the TRS-80 (use trstools app)
+since there is no windows hosted version of M80 and L80 available.
+There is a project running the CP/M versions of M80 and L80 on a PC
+(https://github.com/Konamiman/M80dotNet) but it won't generate TRS-80 /cmd files.
+
+Cross compiling will result in many warnings where ints, unsigned ints, chars and
+pointers are mixed. Small-C does not support casts so there is no way to remove
+the warnings while maintaining a single source code base.
+
 
 
 Sample programs:
@@ -46,63 +147,11 @@ dumpcmd/c
 
 Work Flow:
 <br>
-CC hello/c:n			=> hello/mac:n
+CC hello/c:n		=> hello/mac:n
 <br>
-M80 hello:n=hello:n		=> hello/rel:n
+M80 hello:n=hello:n	=> hello/rel:n
 <br>
 L80 hello:n,hello:n-n-e	=> hello/cmd:n
-
-Compiler source Files:
-<br>
-cc/def
-<br>
-ccint/h
-<br>
-cc0/c
-<br>
-cc01/c
-<br>
-cc1/c
-<br>
-cc11/c
-<br>
-cc12/c
-<br>
-cc2/c
-<br>
-cc21/c
-<br>
-cc22/c
-<br>
-cc3/c
-<br>
-cc31/c
-<br>
-cc32/c
-<br>
-cc33/c
-<br>
-cc4/c
-<br>
-cc41/c
-<br>
-cc42/c
-
-When cross compiling on windows using Visual C (version 2022)
-
-stdio.h
-stdlib.h
-string.h
-
-Cross compiling on Windows works as a WIN32 app. Make sure to add #define MSC to the file cc.def.
-Output is a .mac file which then needs to be transferred to the TRS-80 (use trstools app)
-since there is no windows hosted version of M80 and L80 available.
-There is a project running the CP/M versions of M80 and L80 on a PC
-(https://github.com/Konamiman/M80dotNet) but it won't generate TRS-80 /cmd files.
-
-Cross compiling will result in many warnings where ints, unsigned ints, chars and
-pointers are mixed. Small-C does not support casts so there is no way to remove
-the warnings while maintaining a single source code base.
 
 C-library
 
@@ -181,3 +230,15 @@ sc/cmd			Scripsit for the TRS-80. Full screen editor. Clumsy user interface but 
 				END after the ESC key.
 				Documentation in the docs folder.
 dumpcmd/cmd		Dumps the sections of a cmd file
+compbin/cmd		Compare 2 binary files for equality
+comptxt/cmd		Compare 2 text files (naively)
+
+
+General observations:
+Amazingly difficult to work on a TRS-80 (emulated) whan used to conveniences of Windows.
+Specially text editing very cumbersome. I've been using Scripsit since didn't want to deal
+with the linenumbers based editors. Emulator keyboard made this even more difficult.
+Debugging another nightmare. Memory limitations next problem. Unable to use Newdos/80 V2.5
+since that version reserves part of the High Memory, which doesn't leave enough memory
+for the self-compilation process.
+
