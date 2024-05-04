@@ -25,7 +25,7 @@
 ** options first to help customizing
 */
 char
-	cversie[9] = "2.1B.003\0", /* for identification */
+	cversie[9] = "2.1B.004\0", /* for identification */
 	headers = TRUE,		/* monitor function headers? */
 	pause = TRUE,		/* pause for operator on errors? */
 #ifdef OTHERASM
@@ -109,7 +109,6 @@ char
 	 litbound,					/* index available literal pool */
 	 macidx = 0,				/* macro buffer index */
 	 pptr,						/* ptr to preprocessing buffer */
-/*	 oper,						/* address of binary operator function. Was used in test() */
 	 ch,						/* current character of line being scanned */
 	 nch,						/* next character of line being scanned */
 	 declared,					/* # of local bytes declared, else -1 when done */
@@ -137,7 +136,14 @@ char
 	 *lastp,
 	 *foutbuf;
  int
-	 cchpsize,
+#ifdef DYNHEAP
+	 cchpsize = -1,
+#else
+	 cchpsize = 0,
+#endif
+#ifdef MSC
+	 msccchpsize,
+#endif
 	 lastnheap;
 
  FILE
@@ -181,6 +187,7 @@ char seqw5[6] = { CCNE, LDAH, ORL, JPZL, WILD, WILD };
 char seqw6[6] = { CCNE, LDAH, ORL, JPNZL, WILD, WILD };
 char seqw8[5] = { EXDEHL, LDHLW, 255, 0, CCAND };
 char seqw9[4] = { LDHLW, 255, 0, CCAND };
+char seqw10[5] = {LDHLW, WILD, 0, ADDHLSP, CCGINT };
 
 char rseqw3[7] = {6, NOOP, NOOP, CCRST18, JPNZL, WILD, WILD };
 char rseqw4[7] = {6, NOOP, NOOP, CCRST18, JPZL, WILD, WILD };
@@ -188,6 +195,7 @@ char rseqw5[7] = {6, NOOP, NOOP, CCRST18, JPZL, WILD, WILD };
 char rseqw6[7] = {6, NOOP, NOOP, CCRST18, JPNZL, WILD, WILD };
 char rseqw8[6] = {5, LDHB, 0, NOOP, NOOP, NOOP };
 char rseqw9[5] = {4, LDLE, LDHB, 0, NOOP };
+char rseqw10[6] = {5, LDLB, WILD, CCGIB, NOOP, NOOP };
 
 /*
 ** This table starts at intcode NOP = 128

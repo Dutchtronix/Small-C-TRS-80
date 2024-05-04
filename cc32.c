@@ -188,7 +188,7 @@ primary(lval)  int *lval;
 		return k;
 	}
 	memset(lval, 0, LVALSIZE*BPI);
-	if (symname(sname)) {	/* , TRUE)) { */
+	if (symname(sname)) {
 		if (symptr = findloc(sname)) {
 			if(symptr[IDENT]==LABEL) {
 				experr();

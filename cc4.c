@@ -60,7 +60,8 @@ extern char
 	,seqw1[2], seqw2[4], rseqw1[3], rseqw2[5], seqw7[4], rseqw7[5]
 #endif
 	,seqw3[6], seqw4[6], seqw5[6], seqw6[6], seqw8[5], seqw9[4],
-	rseqw3[7], rseqw4[7], rseqw5[7], rseqw6[7], rseqw8[6], rseqw9[5];
+	rseqw3[7], rseqw4[7], rseqw5[7], rseqw6[7], rseqw8[6], rseqw9[5],
+	seqw10[5], rseqw10[6];
 
 #ifdef MSC
 extern int						/* from part 2 */

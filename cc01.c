@@ -286,11 +286,13 @@ void main(argc, argv) int argc;  char* argv[];
 	** end of initialization code
 	*/
 #ifndef MSC
+#ifdef DEBUG
 #asm
 	JR	_MAIN
 	DB	'ENDINIT'
 _MAIN:
 #endasm
+#endif
 #endif
 	parse();					/* process ALL input */
 	outside();					/* verify outside any function */
@@ -303,11 +305,7 @@ _MAIN:
 		myitoa(errcount, mline);
 		fputs(mline, stderr);
 	}
-	if (1 == errcount)
-		fputs(" error", stderr);
-	else
-		fputs(" errors", stderr);
-	fputs(" detected\n", stderr);
+	fputs(" error(s) detected\n", stderr);
 
 #ifdef MSC
 	i = (stagemax - stage);
@@ -528,23 +526,32 @@ char * mapidx2ptr(int16_t idx)
 #asm
 $MEMRY::
 	DEFW 0
+#endasm
+#ifdef DEBUG
+#asm
 	db	'INITHEAP'
 #endasm
 #endif
+#endif
 
 /*
-** use simpler malloc() since memory always used in lifo method
+** use simpler ccalloc() since heap memory always used in lifo method
 */
 void initheap()
 {
+#ifdef DYNHEAP
+	cchpsize = 0;
+#else
 	cchpsize = 10000;
+#endif
 #ifdef MSC
-	ccheap = malloc(cchpsize);
+	msccchpsize = 20000;
+	ccheap = malloc(msccchpsize);
 	if (NULL == ccheap) {
 		newerror(54);
 		exit(ERRCODE);
 	}
-	memset(ccheap, 0, cchpsize);
+/*	memset(ccheap, 0, cchpsize); */
 #else
 #asm
 	ld	hl,($MEMRY)
@@ -558,6 +565,21 @@ void initheap()
 
 ccalloc(n) int n;
 {
+#ifdef DYNHEAP
+	if (-1 == cchpsize) {
+		/*
+		** initheap() not called yet
+		*/
+		initheap();
+	}
+	lastp = ccheap;
+	lastnheap = n;
+	ccheap += n;
+	cchpsize += n;
+	ccavail();
+	memset(lastp, 0, n);
+	return lastp;
+#else
 	if (0 == cchpsize) {
 		/*
 		** initheap() not called yet
@@ -574,6 +596,7 @@ ccalloc(n) int n;
 	cchpsize -= n;
 	memset(lastp, 0, n);
 	return lastp;
+#endif
 }
 
 #ifndef MSC
@@ -592,21 +615,29 @@ malloc(n) int n;
 		else
 			return ccalloc(n);
 	}
+#ifdef DEBUG
 	else {
 		sout("\nINVALID MALLOC\n", stderr);
 		exit(ERRCODE);
 	}
+#endif
 }
 #endif
 
 ccfree(p) char* p;
 {
+#ifdef DEBUG
 	if (lastp != p) {
 		sout("\nFREE MISMATCH\n", stderr);
 		exit(ERRCODE);
 	}
+#endif
 	ccheap -= lastnheap;
+#ifdef DYNHEAP
+	cchpsize -= lastnheap;
+#else
 	cchpsize += lastnheap;
+#endif
 }
 
 #ifndef MSC

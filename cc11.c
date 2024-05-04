@@ -11,15 +11,15 @@
 /*
 ** dump the literal pool.
 ** litidx is number of bytes to dump
-** TODO size arg unused.
 */
-dumplits(size) int size; {
+void dumplits()
+{
 	char *highlim;
 	/* litidx is index to first free */
 	int i, k, l;
 	highlim = litq + litidx;
 	cptr = litq;
-	k = litidx / 8;
+	k = litidx >> 3;
 	l = litidx & 7;
 #ifdef MSC
 	ASSERT(!stagenext, 2);
@@ -39,7 +39,7 @@ dumplits(size) int size; {
 	if (l > 0) {
 		outstr("\tDEFB\t");
 		for (i = 0; i < l; ++i) {
-			outBhex(*cptr++);
+			outBhex((*cptr++) & 255);
 			if (i < (l - 1)) outbyte(',');
 		}
 		nl();
@@ -54,13 +54,13 @@ dumplits(size) int size; {
 
 /*
 ** dump zeroes for default initial values
-** TODO BUGFIXES coount can be < 0, not just -1
 */
 void dumpzero(size, count) int size, count; {
 	int i,k,l;
 	int curcount;
 	curcount = 0;
 #ifndef BUGFIXES
+	BUGFIXES coount can be < 0, not just - 1
 	if (count == -1) return;
 #endif
 	if (size == 2)				/* count in words */
@@ -113,10 +113,11 @@ dodeclare(varclass) int varclass; {
 		declglb(CDOUBLE, varclass);
 		ns();
 		return 1;
-	} else if((amatch("INT",3)) || (varclass==EXTERNAL)) {
-    declglb(CINT, varclass);
-    ns();
-    return 1;
+	}
+	else if((amatch("INT",3)) || (varclass==EXTERNAL)) {
+	   declglb(CINT, varclass);
+	   ns();
+	   return 1;
     }
   return 0;
   }
@@ -142,11 +143,7 @@ void declglb(vartype, varclass)  int vartype, varclass; {
 		  j=VARIABLE;
 		  k=1;
 		}
-#ifdef BUGFIXES
 		if (symname(ssname)==0) illname();
-#else
-		if (symname(ssname, TRUE) == 0) illname();
-#endif
 		if(findglb(ssname)) multidef(ssname);
 		if (match(")"));				/* 03 */
 		if(match("()")) j=FUNCTION;
@@ -195,11 +192,7 @@ void declloc(vartype)  int vartype;  {
 		if(endst()) return;
 		if(match("*")) j=POINTER;
 		else j=VARIABLE;
-#ifdef BUGFIXES
 		if (symname(ssname)==0) illname();
-#else
-		if (symname(ssname, TRUE) == 0) illname();
-#endif
 		/* no multidef check, block-locals are together */
 		k=BPW;
 		if (vtyp2 == CDOUBLE) {
@@ -250,7 +243,7 @@ initials(size, varident, dim) int size, varident, dim; {
 				}
 				else
 					newerror(5);
-				/* BUGFIXES init() calls expression() which may clobber iptr. Use iptr2 */
+				/* init() calls expression() which may clobber iptr. Use iptr2 */
 				init(size, varident, &dim);		/* TODO BUGFIXES dim not correctly updated */
 #ifdef MSC
 				ASSERT(iptr2 == &refs[i], 1);
@@ -278,7 +271,7 @@ initials(size, varident, dim) int size, varident, dim; {
 		stowlit(0, size=BPW);
 		varident=POINTER;
 	}
-	dumplits(size);
+	dumplits();
 #ifdef BUGFIXES
 	if (dim > 0) {
 		dumpzero(size, dim);
@@ -387,12 +380,7 @@ void newfunc()  {
 		--ptr;
 		sout(ptr, stderr);
 	}
-#ifdef BUGFIXES
-	if (symname(ssname)==0)
-#else
-	if (symname(ssname, TRUE) == 0)
-#endif
-	{
+	if (symname(ssname, TRUE) == 0)	{
 		newerror(10);
 		kill();					/* invalidate line */
 		return;
@@ -413,12 +401,7 @@ void newfunc()  {
 	argstk=2;               	/* stack offsets */
 	while(!match(")")) {		/* then count args */
 		/* any legal name bumps arg count */
-#ifdef BUGFIXES
-		if(symname(ssname))
-#else
-		if (symname(ssname, TRUE))
-#endif
-		{
+		if(symname(ssname))	{
 			if(findloc(ssname)) multidef(ssname);
 			else {
 				addsym(ssname, VARIABLE, CINT, argstk, &locptr, AUTOMATIC);
@@ -456,7 +439,7 @@ void newfunc()  {
 	clearstage(before, start);
 	if(litidx) {
 		postlabel(litlab, FALSE);
-		dumplits(1);			/* dump literals */
+		dumplits();			/* dump literals */
     }
 }
 
@@ -474,11 +457,7 @@ void doargs(t) int t; {
 	do {
 		if (match("*") || match("(*")) j = POINTER;
 		else j=VARIABLE;
-#ifdef BUGFIXES
 		if((legalname=symname(ssname))==0) illname();
-#else
-		if ((legalname = symname(ssname, TRUE)) == 0) illname();
-#endif
 		/* is it a pointer? */
 		if (match(")")) ;
 		if (match("()")) ;

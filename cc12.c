@@ -151,7 +151,7 @@ void dofor() {
 	lab2=getlabel();
 	needtoken("(");
 	if(!match(";")) {
-		doexpr();           	 /* expr 1 */
+		doexpr();           		/* expr 1 */
 		ns();
 	}
 	postlabel(lab1), TRUE;
@@ -162,7 +162,7 @@ void dofor() {
 	jump(lab2);
 	postlabel(wq[WQLOOP]), TRUE;
 	if(!match(")")) {
-		doexpr();            	/* expr 3 */
+		doexpr();            		/* expr 3 */
 		needtoken(")");
 	}
 	jump(lab1);
@@ -222,11 +222,7 @@ void dodefault() {
 void dogoto() {
 	if(nogo > 0) newerror(22);
 	else noloc = 1;
-#ifdef BUGFIXES
 	if(symname(ssname)) jump(addlabel());
-#else
-	if (symname(ssname, TRUE)) jump(addlabel());
-#endif
 	else newerror(23);
 	ns();
 }
@@ -235,12 +231,7 @@ dolabel() {
 	char *savelptr;
 	blanks();
 	savelptr=lptr;
-#ifdef BUGFIXES
-	if(symname(ssname))
-#else
-	if (symname(ssname, TRUE))
-#endif
-	{
+	if(symname(ssname))	{
 		if(gch()==':') {
 			postlabel(addlabel(), TRUE);
 			return 1;
@@ -270,9 +261,9 @@ void doreturn()  {
 
 void dobreak()  {
 	int *ptr;
-	if ((ptr=readwhile(wqptr))==0) return; /* no loops open */
-	modstk((ptr[WQSP]), FALSE);	/* clean up stk ptr */
-	jump(ptr[WQEXIT]);  		/* jump to exit label */
+	if ((ptr=readwhile(wqptr))==0) return;	/* no loops open */
+	modstk((ptr[WQSP]), FALSE);				/* clean up stk ptr */
+	jump(ptr[WQEXIT]);						/* jump to exit label */
 }
 
 void docont()  {
@@ -282,15 +273,15 @@ void docont()  {
 		if ((ptr=readwhile(ptr))==0) return; /* no loops open */
 		if (ptr[WQLOOP]) break;
 	}
-	modstk((ptr[WQSP]), FALSE);	/* clean up stk ptr */
-	jump(ptr[WQLOOP]);			/* jump to loop label */
+	modstk((ptr[WQSP]), FALSE);				/* clean up stk ptr */
+	jump(ptr[WQLOOP]);						/* jump to loop label */
 }
 
 void addwhile(ptr)  int ptr[]; {
 	int k;
-	ptr[WQSP]=csp;           	/* and stk ptr */
-	ptr[WQLOOP]=getlabel();  	/* and looping label */
-	ptr[WQEXIT]=getlabel();   	/* and exit label */
+	ptr[WQSP]=csp;           				/* and stk ptr */
+	ptr[WQLOOP]=getlabel();  				/* and looping label */
+	ptr[WQEXIT]=getlabel();   				/* and exit label */
 	if (wqptr==WQMAX) {
 		newerror(24);
 		exit(ERRCODE);

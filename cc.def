@@ -13,8 +13,13 @@
 /*
 ** compile options
 */
+#ifdef MSC
+#define DEBUG 1
+#endif
+
 #define BUGFIXES 1
 #define NEWHEAP 1
+#define DYNHEAP 1
 /* #define OTHERASM 1 */
 
 /*
@@ -251,6 +256,7 @@
 #define CCDECI	  39	/* call ccdeci */
 #define CCINCI	  44	/* call ccinci */
 #define CCPDPI	  46	/* call ccpdpi */
+#define CCGIB	  50	/* call ccgib/ccc50 */
 
 /* these int-codes need no operand */
 #define NOOP		128		/* 0x80 dummy for labels etc. */
@@ -291,10 +297,10 @@
 #define CCRST18		163		/* 0xA3 use rst 18H: cmp DE and HL on TRS-80 */
 #define LDLE		164		/* 0xA4 ld l,e */
 
-
 /* these int-codes expect a byte-value */
 #define LDAB		180		/* ld a,byte-value */
 #define LDHB		181		/* ld h,byte-value */
+#define LDLB		182		/* ld l, byte-value */
 
 /* these int-codes expect a word-value */
 #define LDHLW		190		/* 0xBE ld hl,word-value */

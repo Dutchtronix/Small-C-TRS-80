@@ -456,7 +456,7 @@ void move()
 */
 void swap()
 {
-  outcode(EXDEHL);  			/* OLD: peephole() uses trailing ";;" */
+  outcode(EXDEHL);
 }
 
 /*

@@ -447,6 +447,12 @@ void peepsub(ptr) char* ptr;
 #endif
 					goto L1;
 				}
+				if (peeplen = subst(peepptr, seqw10, rseqw10, TRUE)) {
+#ifdef MSC
+					if (fdebug) printf("seqw10 matched\n");
+#endif
+					goto L1;
+				}
 			}
 			else if (int_op == EXDEHL) {
 				if (peeplen = subst(peepptr, seqw8, rseqw8, FALSE)) {
@@ -562,6 +568,9 @@ void peephole(ptr) char *ptr;
 		}
 		else if (int_op == LDAB) {
 			outstr("LD\tA,"); outdec(*peepptr++ & 255); nl();
+		}
+		else if (int_op == LDLB) {
+			outstr("LD\tL,"); outdec(*peepptr++ & 255); nl();
 		}
 		else if (int_op == LDHB) {
 			outstr("LD\tH,"); outdec(*peepptr++ & 255); nl();

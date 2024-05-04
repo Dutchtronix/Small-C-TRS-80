@@ -1,0 +1,18 @@
+PAGE	66
+	TITLE	SMALL-C	RUN-TIME LIBRARY SUPPLEMENT
+TRUE	EQU	1
+	SUBTTL	VARIABLE MOVING	FUNCTIONS
+	PAGE
+;
+; for now, rename the /rel file to forlib/rel
+;
+; CCGIB Get integer with SP offset in L
+;
+CCC50::
+	ld	h,0		;make word
+	inc	hl		;correct for return address
+	inc	hl
+	add	hl,sp
+	jp	CCC2##
+
+	END

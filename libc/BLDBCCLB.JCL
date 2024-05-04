@@ -1,0 +1,26 @@
+REM build cclib relocatable files /mac files
+m80 ccmain/rel:3=ccmain/mac:3
+m80 iolib1/rel:3=iolib1/mac:3
+m80 iolib2/rel:3=iolib2/mac:3
+m80 iolib3/rel:3=iolib3/mac:3
+m80 calloc/rel:3=calloc/mac:3
+m80 malloc/rel:3=malloc/mac:3
+m80 printf/rel:3=printf/mac:3
+m80 atoi/rel:3=atoi/mac:3
+m80 dtoi/rel:3=dtoi/mac:3
+m80 itoa/rel:3=itoa/mac:3
+m80 itoab/rel:3=itoab/mac:3
+m80 reverse/rel:3=reverse/mac:3
+m80 strlen/rel:3=strlen/mac:3
+m80 scanf/rel:3=scanf/mac:3
+m80 utoi/rel:3=utoi/mac:3
+m80 ctype/rel:3=ctype/mac:3
+m80 getarg/rel:3=getarg/mac:3
+m80 string1/rel:3=string1/mac:3
+m80 string2/rel:3=string2/mac:3
+m80 string3/rel:3=string3/mac:3
+m80 floatsim/rel:3=floatsim/mac:3
+m80 circle/rel:3=circle/mac:3
+m80 romlib1/rel:3=romlib1/mac:3
+m80 romlib2/rel:3=romlib2/mac:3
+m80 romlib3/rel:3=romlib3/mac:3

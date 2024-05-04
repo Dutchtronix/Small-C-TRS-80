@@ -99,15 +99,11 @@ void putint(i, addr, len) char *addr; int i, len; {
 /*
 ** test if next input string is legal symbol name
 */
-#ifdef BUGFIXES
 symname(sname) char* sname;
-#else
-symname(sname, ucase) char *sname; int ucase;
-#endif
 {
 
 	blanks();
-#ifdef UNCLEARBUGFIXES
+#ifdef XBUGFIXES
 	if (alpha(ch) == 0) return (*sname = 0);	/* causes failure */
 #else
 	if(alpha(ch)==0) return 0;
@@ -571,14 +567,10 @@ void keepch(c)  char c;
 	if(pptr<LINEMAX) pline[++pptr]=c;
 }
 
-void addmac() {
+void addmac()
+{
 	int k;
-#ifdef BUGFIXES
-	if(symname(msname)==0)
-#else
-	if (symname(msname, FALSE) == 0)
-#endif
-		{
+	if(symname(msname)==0) {
 		illname();
 		kill();
 		return;

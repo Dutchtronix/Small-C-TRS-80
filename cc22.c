@@ -95,17 +95,21 @@ void outBhex(number) int number;
 	}
 }
 
-
 void outdec(number)  int number;
 {
 	int k, zs;
 	char c;
 	zs = 0;
 	k = 10000;
+#ifdef MSC
+	ASSERT(number + 1 != -32767);
+#endif
+#ifdef SPECIALCASE
 	if (number + 1 == -32767) {
 		outstr("-32768");
 		return;
 	}
+#endif
 	if (number < 0) {
 		number = (-number);
 		outbyte('-');
@@ -295,8 +299,12 @@ strout:
 strfout:
 	ld	hl, 0
 	ret
+#endasm
+#ifdef DEBUG
+#asm
 	db	'STREQ'
 #endasm
+#endif
 #endif
 }
 
