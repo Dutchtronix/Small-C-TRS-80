@@ -410,9 +410,9 @@ char peepch, *peepptr;
 int16_t peepword, peeplen;
 
 /*
-** Actual peephole substitutions
+**  peephole substitutions
 */
-void peepsub(ptr) char* ptr;
+void peephole(ptr) char* ptr;
 {
 	int16_t int_op; char x;
 	peepptr = ptr;
@@ -519,11 +519,11 @@ void peepsub(ptr) char* ptr;
 /*
 ** send int_ops in stage buffer to macro file
 */
-void peephole(ptr) char *ptr;
+void codegen(ptr) char *ptr;
 {
 	int16_t int_op;
-	if (output == 0) return;
-	peepsub(ptr);
+	if (output == NULL) return;
+	peephole(ptr);
 	inlabel = FALSE;
 	peepptr = ptr;
 	while (int_op = (*peepptr++ & 255)) {	/* zero indicated end of int_ops */
@@ -596,7 +596,7 @@ void peephole(ptr) char *ptr;
 			peepptr += BPW;
 			if (int_op < LDAIS) {
 				if (int_op < LITERAL) {
-					outstr(inttwo[int_op-LDHLW]);	/* STOM */
+					outstr(inttwo[int_op-LDHLW]);
 					if (int_op == DEFLWRD)
 						printlabel(peepword);
 					else

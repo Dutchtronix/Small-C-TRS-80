@@ -15,10 +15,10 @@
 */
 #ifdef MSC
 #define DEBUG 1
+#define ccavail() 
 #endif
 
 #define BUGFIXES 1
-#define NEWHEAP 1
 #define DYNHEAP 1
 /* #define OTHERASM 1 */
 

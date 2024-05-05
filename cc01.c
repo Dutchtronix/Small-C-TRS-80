@@ -517,12 +517,44 @@ char * mapidx2ptr(int16_t idx)
 }
 #endif
 
-#ifdef NEWHEAP
+#ifdef MSC
 /*
-** need to use malloc() because fopen() uses malloc()
+** Compiler memory allocator when running on Windows
 */
+ccalloc(int n)
+{
+	if (-1 == cchpsize) {
+		cchpsize = 0;
+		msccchpsize = 20000;
+		ccheap = malloc(msccchpsize);
+		if (NULL == ccheap) {
+			newerror(54);
+			exit(ERRCODE);
+		}
+	}
+	lastp = ccheap;
+	lastnheap = n;
+	ccheap += n;
+	cchpsize += n;
+	memset(lastp, 0, n);
+	return lastp;
+}
 
-#ifndef MSC
+ccfree(char *p)
+{
+	if (lastp != p) {
+		sout("\nFREE MISMATCH\n", stderr);
+		exit(ERRCODE);
+	}
+	ccheap -= lastnheap;
+	cchpsize -= lastnheap;
+}
+
+#else		/* !MSC */
+
+/*
+** very simple memory allocator. Assumes LIFO (mostly)
+*/
 #asm
 $MEMRY::
 	DEFW 0
@@ -532,45 +564,16 @@ $MEMRY::
 	db	'INITHEAP'
 #endasm
 #endif
-#endif
-
-/*
-** use simpler ccalloc() since heap memory always used in lifo method
-*/
-void initheap()
-{
-#ifdef DYNHEAP
-	cchpsize = 0;
-#else
-	cchpsize = 10000;
-#endif
-#ifdef MSC
-	msccchpsize = 20000;
-	ccheap = malloc(msccchpsize);
-	if (NULL == ccheap) {
-		newerror(54);
-		exit(ERRCODE);
-	}
-/*	memset(ccheap, 0, cchpsize); */
-#else
-#asm
-	ld	hl,($MEMRY)
-	ld	(ccheap), hl
-#endasm
-/*	ccheap = &CCCEND;			/* location of end of memory allocated to program */
-	foutbuf = NULL;			/* only used for 306 byte buffer */
-	ccavail();
-#endif
-}
 
 ccalloc(n) int n;
 {
-#ifdef DYNHEAP
 	if (-1 == cchpsize) {
-		/*
-		** initheap() not called yet
-		*/
-		initheap();
+		cchpsize = 0;
+#asm
+		ld	hl, ($MEMRY)
+		ld(ccheap), hl
+#endasm
+		foutbuf = NULL;			/* only used for 306 byte buffer */
 	}
 	lastp = ccheap;
 	lastnheap = n;
@@ -579,27 +582,20 @@ ccalloc(n) int n;
 	ccavail();
 	memset(lastp, 0, n);
 	return lastp;
-#else
-	if (0 == cchpsize) {
-		/*
-		** initheap() not called yet
-		*/
-		initheap();
-	}
-	if (n > cchpsize) {
-		newerror(54);
-		exit(ERRCODE);
-	}
-	lastp = ccheap;
-	lastnheap = n;
-	ccheap += n;
-	cchpsize -= n;
-	memset(lastp, 0, n);
-	return lastp;
-#endif
 }
 
-#ifndef MSC
+ccfree(p) char* p;
+{
+#ifdef DEBUG
+	if (lastp != p) {
+		sout("\nFREE MISMATCH\n", stderr);
+		exit(ERRCODE);
+	}
+#endif
+	ccheap -= lastnheap;
+	cchpsize -= lastnheap;
+}
+
 malloc(n) int n;
 {
 	char* ptr;
@@ -608,6 +604,9 @@ malloc(n) int n;
 		** called from fopen
 		*/
 		if (foutbuf) {
+			/*
+			** non-LIFO returned buffer available.
+			*/
 			ptr = foutbuf;
 			foutbuf = NULL;
 			return ptr;
@@ -622,25 +621,7 @@ malloc(n) int n;
 	}
 #endif
 }
-#endif
 
-ccfree(p) char* p;
-{
-#ifdef DEBUG
-	if (lastp != p) {
-		sout("\nFREE MISMATCH\n", stderr);
-		exit(ERRCODE);
-	}
-#endif
-	ccheap -= lastnheap;
-#ifdef DYNHEAP
-	cchpsize -= lastnheap;
-#else
-	cchpsize += lastnheap;
-#endif
-}
-
-#ifndef MSC
 cfree(p) char* p;
 {
 	if (lastp != p) {
@@ -654,12 +635,8 @@ cfree(p) char* p;
 	else
 		ccfree(p);
 }
-#endif
 
 ccavail()
-#ifdef MSC
-{}
-#else
 {
 #asm
 	LD	HL, (ccheap)
@@ -678,13 +655,11 @@ NoMemErr:
 	LD	HL, MSGNOMEM
 	PUSH	HL
 	CALL	FPUTS
-	JP	exit;need argument 
+	JP	exit	;need argument 
 MSGNOMEM: db "no memory", 13, 0
 #endasm
 }
 #endif		/* MSC */
-
-#endif		/* NEWHEAP */
 
 #ifndef MSC
 memset(s, c, cnt) char* s; int c, cnt;
@@ -698,7 +673,6 @@ memset(s, c, cnt) char* s; int c, cnt;
 ;          e = char c
 ;         bc = uint n
 ; 
-;	pop	iy
 	pop	hl	;return address
 	ld (saveret), hl
 	pop	hl	;s
@@ -722,7 +696,6 @@ outmemset:
 	push bc
 	push bc
 	push bc
-;	jp (iy)
 	ld bc,(saveret)
 	push bc
 	ret

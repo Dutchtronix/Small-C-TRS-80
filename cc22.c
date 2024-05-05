@@ -65,7 +65,7 @@ void clearstage(before, start) char *before, *start;
 	if(stagenext=before)
 		return;					/* if before != 0 */
 	if(start) {
-		peephole(start);
+		codegen(start);
     }
 }
 

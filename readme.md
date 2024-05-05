@@ -254,7 +254,7 @@ TRS-80 keyboard limitations:
 	\ use command line option -@
 
 Tools:
-The tools folders contains binaries that will run on a TRS-80 Model I running Newdos/80 V2.0.
+The bin folders contains binaries that will run on a TRS-80 Model I running Newdos/80 V2.0.
 List of files:
 cc/cmd			Small-C compiler V2.1B. Converts Small-C source code to assembly files
 				in M80 format.
@@ -274,7 +274,7 @@ makelib/cmd		Create library cclib/rel.
 
 
 General observations:
-Amazingly difficult to work on a TRS-80 (emulated) whan used to conveniences of Windows.
+Amazingly difficult to work on a TRS-80 (emulated) when used to conveniences of Windows.
 Specially text editing very cumbersome. I've been using Scripsit since didn't want to deal
 with the linenumbers based editors. Emulator keyboard made this even more difficult.
 Debugging another nightmare. Memory limitations next problem. Initially unable to use Newdos/80 V2.5
