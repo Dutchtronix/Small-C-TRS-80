@@ -1,0 +1,361 @@
+
+
+
+     TRS-80 Small-C V2.0          1. Samenvatting      Pagina 1
+     
+     
+
+     
+     
+     1.1: Samenvatting
+          ------------
+
+
+     Small-C 2.0 is een  vervolg op Small-C versie 1,  de bekende
+     Dr. Dobbs subset  kompiler  van de  programmeertaal C,  ont-
+     worpen  door Ron Cain. C is  een krachtige taal,  welke veel
+     mogelijkheden kent om:
+     
+          "Zoveel mogelijk zo gemakkelijk mogelijk te doen"
+     
+     Beide Small-C  versies zijn  afkomstig  uit het interessante
+     tijdschrift  Dr. Dobb's Journal.  Small-C 2.0  is  afgelopen
+     jaar gepubliceerd als  versie voor  een North Star komputer.
+     Mikrorie  Software  biedt  een zeer  komplete  implementatie
+     voor de TRS-80 aan:
+     
+                   de TRS-80 Small-C V2.0 kompiler.
+     
+     Dit  is een  uitbreiding  en verbetering  van  de  Dr.Dobb's
+     versie.  Met deze kompiler  kunnen  vele C programma's  ver-
+     werkt  worden en in  Small-C geschreven programma's  kunnen,
+     normaal  gesproken,  direkt  naar  een volledige C  kompiler
+     toe.  Deze TRS-80 Small-C  V2.0  kompiler vertaalt  C source
+     programma's  naar assembler statements. Verschillende source
+     file formaten worden  ondersteund;  ook  zijn  voorzieningen
+     aanwezig  voor  het  feit dat  op de  TRS-80  vaak  bepaalde
+     ascii-karakters   afwezig  zijn.  Drie   assemblers   worden
+     ondersteund namelijk:
+     
+         Edtasm(/Plus), Macro80, en Instant Assembler
+     
+     Geen van deze  assemblers  wordt  bijgeleverd; daarom  dient
+     een van deze  assemblers beschikbaar te  zijn,  wanneer deze
+     kompiler wordt aangeschaft.
+     
+     Door  de  assembler output,  kan C  gemakkelijk gekombineerd
+     worden  met  assembler  routines. Zelfs assembler statements
+     binnen het C  programma zijn  mogelijk! Ook  separate kompi-
+     latie is  mogelijk. Hierdoor kunnen grote  programma's opge-
+     splitst  worden  in  kleinere,  meer  hanteerbare   modulen.
+     Bovendien  is  hierdoor het werken  met bibliotheken  op  de
+     TRS-80 eindelijk goed mogelijk geworden.
+     
+     Naast de kompiler, wordt een bibliotheek meegeleverd,  welke
+     voldoet  aan de  'Standard I/O Library',  zoals gedefinieerd
+     door D.M. Ritchie,  de  ontwerper  van  C.  Deze bibliotheek
+     ondersteunt volledige I/O  redirektie,  kommando regel argu-
+     menten  d.m.v. 'argc, argv' en  volledige  device onafhanke-
+     lijkheid;  een bijzonder  gewaardeerde eigenschap.  Volledig
+     dynamisch  geheugen-beheer is ook  beschikbaar.  Ook kan  in
+     deze  bibliotheek  geformatteerde  I/O gevonden worden,  met
+                                   
+                                   
+         Copyright <C> 1984:  Mikrorie Software --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          1. Samenvatting      Pagina 2
+     
+     
+     name de funktie 'printf'.
+     
+     Verder  is er een debugger  om fouten  te zoeken in gekompi-
+     leerde  C-programma's en  een  profiler (werkt alleen  onder
+     NEWDOS/80)  waarmee onderzocht kan  worden, welke  delen van
+     het programma  veel tijd  kosten.  Versnelling  van het pro-
+     gramma  is  dan  mogelijk door die  delen  efficienter  (bv.
+     gedeeltelijk assembler) te maken.
+     
+     TRS-80  Small-C  V2.0  is een uiterst  krachtig  programmeer
+     gereedschap. Integers,  characters, pointers (de kracht  van
+     C)  en  arrays worden ondersteund, evenals alle  C operaties
+     daarop (behalve de 'conditional  expression').  De gebruike-
+     lijke   funkties   met   argumenten,   rekursie,   (globale)
+     statische variabelen  en  (block)  lokale  variabelen worden
+     ondersteund  door  deze  TRS-80  Small-C  V2.0 kompiler. Ook
+     alle C statements  zijn  aanwezig. De bij de kompiler  gele-
+     verde dokumentatie  is volgens  de Mikrorie tradities  opge-
+     bouwd. Hieronder  volgt  een  lijst  van TRS-80 Small-C V2.0
+     eigenschappen:
+     
+          - preprocessor met #include (genest), #define, #ifdef
+          - rekursieve funkties met argumenten, inklusief
+            main (argc, argv) char *argv[];
+          - globale en lokale variabelen (lokaal t.o.v
+            een block {...} )
+          - int en char type, pointers en arrays.
+          - operatoren:
+            () []
+            !  ++ -- - * & ~
+            *  /  %
+            +  -
+            << >>
+            <  <= > >=
+            == !=
+            &
+            ^
+            |
+            &&
+            ||
+            = += -= *= /= %= <<= >>= &= |= ^=
+            ,
+          
+          - statements:
+            samengesteld m.b.v. { .. }
+            if ...... else
+            while .. do
+            do ..... while
+            for ( .. ; .. ; ..)
+            switch / case / default
+            return
+            continue
+            break
+            goto
+
+                                   
+                                   
+         Copyright <C> 1984:  Mikrorie Software --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          1. Samenvatting      Pagina 3
+     
+     
+     Voorbeelden van TRS-80 Small-C V2.0 programma's
+     -----------------------------------------------
+     
+     /*
+     ** kopieer standaard input naar standaard output
+     */
+     #include <stdio/h>
+     #define STRINGSIZE 132
+     main (argc, argv) char *argv[];
+     {
+       char s[STRINGSIZE];
+       while (fgets(s, STRINGSIZE, stdin))
+         fputs(s, stdout);
+     }
+     
+     of:
+     /*
+     ** print kommando regel argumenten naar standaard output
+     */
+     #include <stdio/h>
+     main (argc, argv) char *argv[];
+     {
+       char *s, c;
+       while (--argc) {
+         s = *++argv;
+         while (c=*s++)
+           fputc(c, stdout);
+         fputc('\n', stdout);
+       }
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+         Copyright <C> 1984:  Mikrorie Software --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          1. Samenvatting      Pagina 4
+     
+     
+     1.2 Inhoud van de distributie diskettes
+         -----------------------------------
+     
+     Diskette A:
+     
+     CC/CMD          TRS-80 Small-C V2.0 kompiler
+     C20ERRS/DAT     Foutmeldingen van de kompiler
+     STDIO/H         Deklaraties Standaard I/O bibliotheek
+     DEFINES/H       Deklaraties speciale tekens
+     CCLIB/V20       Run-Time module
+                     alleen nodig bij gebruik Edtasm
+     CCMAIN/ASM      Edtasm Interface naar Run-Time systeem
+     HELLO/C         Voorbeeld programma
+     SIEVE/C         Voorbeeld programma
+     FPRINT/C        idem
+     IQ/C            idem
+     LOW/CMD         Lower case driver
+     
+     Diskette B:
+     
+     CCLIB/REL       I/O bibliotheek voor Macro80/Link80
+     CCLIB/IAS       I/O bibliotheek voor Instant Assembler
+     PROFILE/CMD     Tijdsprofiel meter
+     PRINTPRF/CMD    Print resultaat van PROFILE
+     PRINTPRF/C      Source van PRINTPRF/CMD
+     MRBUG/CMD       Debugger
+     KONVERSI/CMD    File formaten konverteerder
+     CCUSTOM/CMD     C systeem modificeer programma
+     PASLIB/V22      Run-Time systeem voor KONVERSI en CCUSTOM
+     FORLIB/REL      Dummy bibliotheek voor Link80
+     
+     
+     Diskette C:
+     
+     CTYPE/H         Deklaraties voor ASCII test funkties
+     CTYPE/C         Source voor ASCII test funkties
+     VARIOUS/H       Deklaraties voor diverse funkties module
+     VARIOUS/C       Source diverse funkties module
+     PRINTF/C        Source module PRINTF
+     CCRUN/MAC       Macro80 source module CCRUN
+     IOLIB/MAC       Macro80 source module IOLIB
+     MALLOC/MAC      Macro80 source module MALLOC
+     CCMAIN/MAC      Macro80 source module CCMAIN
+     MRBUG/REL       Relokeerbare versie van MRBUG/CMD
+     CCRUN/ASM       Edtasm source module CCRUN
+     IOLIB/ASM       Edtasm source module IOLIB
+     MALLOC/ASM      Edtasm source module MALLOC
+     
+
+
+
+
+
+
+
+                                   
+                                   
+         Copyright <C> 1984:  Mikrorie Software --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          Reserve              Pagina 5
+     
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+         Copyright <C> 1984:  Mikrorie Software --  Rotterdam
+
+
+
+
+
+
+
+
+

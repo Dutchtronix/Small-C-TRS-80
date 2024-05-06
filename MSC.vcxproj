@@ -137,6 +137,16 @@
     <ClInclude Include="ccint.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\cc.cmd" />
+    <None Include="bin\cclib.rel" />
+    <None Include="bin\compbin.cmd" />
+    <None Include="bin\comptxt.cmd" />
+    <None Include="bin\dumpcmd.cmd" />
+    <None Include="bin\forlib.rel" />
+    <None Include="bin\l80.cmd" />
+    <None Include="bin\m80.cmd" />
+    <None Include="bin\makelib.cmd" />
+    <None Include="bin\sc.cmd" />
     <None Include="C21ERRS.DAT" />
     <None Include="cc.def" />
   </ItemGroup>

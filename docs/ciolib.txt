@@ -1,0 +1,720 @@
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 31
+
+
+
+
+     6. Input/Output in TRS-80 Small-C V2.0
+        -----------------------------------
+
+
+     6.1: Algemeen
+          --------
+
+
+     Mikrorie  Software  levert,  tezamen   met  de  Small-C  2.0
+     kompiler  een   vrijwel  volledige  Standaard   Input/Output
+     bibliotheek,   overeenkomend  het   de  specifikaties  zoals
+     beschreven in
+
+         "The Standard I/O Library"   door D.M. Ritchie
+
+     Kenmerken van deze implementatie zijn:
+
+         - volledige device onafhankelijkheid
+         - input/output redirectie
+         - argc, argv support
+         - dynamisch memory management
+
+
+
+     De volgende funkties zijn in de I/O bibliotheek aanwezig:
+     ---------------------------------------------------------
+
+         1.  fopen (filenaam, type)
+         2.  freopen (filenaam, type, ioptr)
+         3.  getc (ioptr)
+         4.  fgetc (ioptr)
+         5.  putc (c, ioptr)
+         6.  fputc (c, ioptr)
+         7.  fclose (ioptr)
+         8.  fflush (ioptr)
+         9.  exit (errcode)
+         10. feof (ioptr)
+         11. ferror ( ioptr)
+         12. getchar ()
+         13. putchar (c)
+         14. fgets (s, n, ioptr)
+         15. fputs (s, ioptr)
+         16. ungetc (c, ioptr)
+         17. fread (sourceptr, itemsize, nitems, ioptr)
+         18. fwrite (destptr, itemsize, nitems, ioptr)
+         19. rewind (ioptr)
+         20. system (s)
+         21. getw (ioptr)
+         22. putw (w, ioptr)
+         23. fileno (ioptr)
+         24. fseek (ioptr, offset, ptrname)
+         25. ftell (ioptr)
+         26. malloc (num)
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 32
+
+
+         27. calloc (num, itemsize)
+         28. cfree (ptr)
+
+         29. printf (format, arg1, ... ,argn)
+
+
+     De volgende funktie is niet aanwezig:
+     ------------------------------------
+         1.  scanf (format, arg1, ..., argn)
+
+
+     De volgende funkties zijn UNIX afhankelijk
+     ------------------------------------------
+     en daarom niet aanwezig:
+     -----------------------
+
+         1. setbuf (ioptr, buf)
+         2. getpw (uid, buf)
+
+
+     6.2: Standaard Files
+          ---------------
+
+
+     Naast  de uitgebreide  mogelijkheden om  I/O  -en  dynamisch
+     memory management- te doen,  kent C,  in kombinatie met deze
+     Standaard I/O Bibliotheek de standaard files:
+
+         stdin, stdout, stderr
+
+     Ook  wanneer geen files zijn  geopend, heeft elk C programma
+     in  ieder  geval  drie  files  ter  beschikking. Deze  heten
+     stdin, voor standaard INPUT, stdout, voor  standaard OUTPUT,
+     en stderr, voor  standaard  ERROR. Deze files  zijn  normaal
+     verbonden met het keybord (stdin)  en de display  (stdout en
+     stderr). Op het moment  dat een programma wordt  uitgevoerd,
+     kunnen stdin  en stdout ergens anders mee  worden verbonden.
+     Dit heet "redirektie".  Op  de DOS  kommando  regel zijn  de
+     tekens '<' resp. '>' te gebruiken om dit aan te geven.
+     Een   programma   "kopy"   kopieert  standaard   input  naar
+     standaard output en ziet er bijvoorbeeld als volgt uit:
+
+     #include <stdio/h>
+     main() {
+         char string[132];
+         while (fgets(string, 132, stdin))
+             fputs(string, stdout);
+
+     Het DOS kommando
+
+         kopy
+
+     kopieert  tekst van het keybord  naar  de  display. Door het
+     DOS kommando
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 33
+
+
+         kopy <inputfile
+
+     wordt de opgegeven inputfile naar de display gekopieerd. Of
+
+         kopy <inputfile >outputfile
+
+     kopieert de ene file naar de andere
+
+     Het    programma   is   elke   keer   hetzelfde,   wat   een
+     vereenvoudiging van het benodigde programmeerwerk betekent.
+
+
+
+     6.3: Kommando regel argumenten
+          -------------------------
+
+
+     De tekst,  ingetypt op de  DOS kommando regel,  is in elk  C
+     programma   beschikbaar  in   de  -alom  aanwezige-  funktie
+     "main". Deze luidt:
+
+         main (argc, argv)
+         char *argv[];
+
+     De  kommando-regel  van  een  C programma  wordt automatisch
+     geanalyseerd  en opgesplitst  in argumenten.  Op  dit moment
+     vindt ook de input/output redirektie ('<','>') plaats.
+     Een  argument is gedefinieerd als  een string, omringd  door
+     spaties (of begin cq. einde regel).
+     De regel
+
+         kopy aap noot mies
+
+     kent vier argumenten: kopy
+                           aap
+                           noot
+                           mies
+
+     De parameter 'argc'  bevat  het  aantal  argumenten, in  dit
+     geval vier, en  de  parameter  'argv' is het adres  van  een
+     array van string, in dit geval:
+
+         argv[0] = "kopy"
+         argv[1] = "aap"
+         argv[2] = "noot"
+         argv[3] = "mies"
+
+     De redirektie-strings "<input" en ">output" worden  niet als
+     argument doorgegeven.
+     Doorgeven van een argument,  waarin spaties  voorkomen,  kan
+     gebeuren door deze tussen  dubbele quotes te zetten. Bij een
+     argument  dat met '<' cq '>'  begint,  zonder redirektie  te
+     bedoelen, kan hetzelfde gedaan worden:
+
+         kopy ">aap" "noot en mies"
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 34
+
+
+
+     heeft drie argumenten: kopy
+                            >aap
+                            noot en mies
+
+
+     Overigens konverteert DOS de kommando lijn naar upper case
+
+
+
+     6.4: Filenaam konventies
+          -------------------
+
+
+     De  TRS-80  Standaard  I/O Bibliotheek  is  volledig  DEVICE
+     onafhankelijk. Dit betekent  dat  het  voor een C  programma
+     irrelevant is of de I/O  via een device, als het keybord, de
+     display of de printer, dan wel via een disk file loopt.
+     Device namen zijn:
+
+         *kb  - keybord input
+         *do  - display output
+         *pr  - printer output
+
+     Filenamen zijn samengesteld volgens de TRSDOS standaard:
+
+         naam/ext.password:drive
+
+
+     Een C programma kan er bijvoorbeeld als volgt uitzien:
+
+         FILE *f;
+         f = fopen("*pr", "w");  /* schrijf naar de printer */
+
+     In het bovenstaande kopy voorbeeld kan ook staan:
+
+         kopy <inputfile >*pr    /* kopieer naar printer */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 35
+
+
+     6.5  Gebruik C files
+          ---------------
+
+
+     Een  C-programma  kan de faciliteiten  van de Standaard  I/O
+     bibliotheek gebruiken door de file "stdio/h" te includen:
+
+         #include <stdio/h>
+
+     Hierin  staan  een aantal universele  konstanten als  FALSE,
+     TRUE, EOF en NULL, evenals  de  beschikbare funkties. Ook de
+     naam  FILE  is  hier gedeklareerd. In verband  met deze naam
+     geldt het volgende:
+
+          Elke  file in C  wordt geadresseerd door het  adres van
+          een   zogenaamd   "file  slot".   De  funktie   "fopen"
+          retourneert  zo'n  adres. Een C variabele, waar we zo'n
+          file  adres  in  bewaren,  is  m.a.w. een  pointer.  De
+          waarden   "stdin",   "stdout"  en   "stderr"  zijn  ook
+          adressen van file slots.
+
+          In C moeten  we de variabelen, welke naar een file slot
+          verwijzen deklareren als:
+
+              FILE *input, *output;
+
+          waarbij "input" cq. "output" gevuld wordt door bv.
+
+              if ((input = fopen (naam, "r")) == NULL) opnerr();
+              if ((output= fopen (naam, "w")) == NULL) opnerr();
+
+
+     6.6: Beschrijving per funktie
+          ------------------------
+
+
+     1.  fopen (filenaam, type) char *filenaam, *type;
+         ---------------------------------------------
+          Opent de  gevraagde  file en  allokeert  eventuele file
+          buffers op de heap (malloc()). De  parameter 'type' mag
+          zijn "r",  "w"  of "a",  welke respektievelijk  "read",
+          "write", en  "append" betekenen. Filenaam en type  zijn
+          beide  character  strings.  De geretourneerde waarde is
+          het  adres van een file slot,  of NULL  indien  de open
+          mislukt is.
+
+     2.  freopen (filenaam, type, ioptr)
+         -------------------------------
+         char *filenaam, *type; FILE *ioptr;
+
+          Sluit het aangegeven file  slot, indien nodig, en opent
+          de  gevraagde file,  daarbij  het  aangegeven file slot
+          gebruikend. De in-  en uitvoer  waarden zijn gelijk aan
+          fopen. Deze funktie  is  o.a. nuttig voor heropenen van
+          stdin en/of stdout.
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 36
+
+
+
+     3.  getc (ioptr) FILE *ioptr;
+         -------------------------
+     4.  fgetc (ioptr) FILE *ioptr;
+         --------------------------
+          Geeft  het  volgende  karakter  van  de geopende  file,
+          aangegeven door ioptr, terug als integer  waarde tussen
+          0 en  255. In geval van End_Of_File of een foutsituatie
+          wordt de waarde EOF  terug gegeven. End_Of_File van een
+          keybord  file kan worden aangegeven door de BREAK toets
+          (indien werkend).
+
+     5.  putc (c, ioptr) char c; FILE *ioptr;
+         ------------------------------------
+     6.  fputc (c, ioptr) char c; FILE *ioptr;
+         -------------------------------------
+          Schrijft  het karakter  'c'  naar  de  file, aangegeven
+          door  ioptr,  en  geeft   de  integer  waarde  van  het
+          karakter terug  als  funktie  waarde. In geval  van een
+          fout wordt de waarde EOF teruggegeven
+
+     7.  fclose (ioptr) FILE *ioptr;
+         ---------------------------
+          Sluit  de   file,   aangegeven  door  ioptr   en  geeft
+          eventuele  file buffers vrij. Bij beeindiging van een C
+          programma worden alle files automatisch gesloten.
+
+     8.  fflush (ioptr) FILE *ioptr;
+         ---------------------------
+          Deze  funktie verwerkt eventuele gebufferde data. Omdat
+          de TRS-80 I/O  bibliotheek ongebufferd werkt,  is  deze
+          funktie dummy.
+
+     9.  exit (errcode) int errcode;
+         ---------------------------
+          Beeindigt  het  C-programma.  De  waarde  'errcode' kan
+          gebruikt worden  voor  kommunikatie-doeleinden.  Exit()
+          sluit geopende files.
+
+
+     5. feof (ioptr) FILE *ioptr;
+         -------------------------
+          Geeft een niet-nul waarde terug indien een  End_Of_File
+          situatie voor de aangegeven file bestaat.
+
+     11. ferror (ioptr) FILE *ioptr;
+         ---------------------------
+          Geeft  een waarde ongelijk  nul, overeenkomend  met  de
+          DOS  error  kodes,  terug   indien  er   een   fout  is
+          opgetreden tijdens het lezen van cq.  schrijven naar de
+          aangegeven  file. Deze  waarde heeft  betrekking op  de
+          laatst  opgetreden  fout  en blijft  bestaan  totdat de
+          file wordt gesloten.
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 37
+
+
+     12. getchar ();
+         -----------
+          Is identiek aan getc(stdin) cq. fgetc (stdin)
+
+     13. putchar (c) char c;
+         -------------------
+          Is identiek aan putc(c, stdout) cq. fputc(c, stdout)
+
+     10. fgets (s, n, ioptr) char *s; FILE *ioptr;
+         -----------------------------------------
+          Leest maximaal  n-1  karakters  van  de aangegeven file
+          'ioptr' naar  de door  's' aangegeven string. Het lezen
+          stopt bij  "newline" teken (="\n").  Dit teken wordt in
+          de  string  gezet,  gevolgd  door  een  NULL  karakter.
+          'fgets'  geeft het eerste  argument  terug, of NULL als
+          er een  fout of End_Of_File is  opgetreden. End_Of_File
+          van  een  keybord file  kan  worden  aangegeven door de
+          BREAK toets (indien werkend).
+
+     15. fputs (s, ioptr) char *s; FILE *ioptr;
+         --------------------------------------
+          De  string 's',  welke door een NULL karakter moet zijn
+          beeindigd, wordt  naar de aangegeven  file  geschreven.
+          Er  wordt geen NEWLINE toegevoegd. Er wordt geen waarde
+          teruggeven.
+
+     16. ungetc (c, ioptr) char *s; FILE *ioptr;
+         ---------------------------------------
+          Het  karakter 'c' wordt als het ware teruggestopt in de
+          aangegeven  file.   Er   mag   per   file  1   karakter
+          tegelijkertijd worden teruggestopt.
+
+
+
+     17. fread (ptr, size, nitems, ioptr); FILE *ioptr;
+         ----------------------------------------------
+          Een 'nitems' aantal  data, elk van  'size' groot, wordt
+          van  de  aangegeven  file   'ioptr'  naar  de   buffer,
+          aangegeven door 'ptr' gelezen.
+
+     18. fwrite (ptr, size, nitems, ioptr); FILE *ioptr;
+         -----------------------------------------------
+          Een  'nitems' aantal data, elk van 'size' groot, worden
+          van   de buffer, aangegeven door 'ptr'  geschreven naar
+          de aangegeven file 'ioptr'.
+
+     19. rewind (ioptr) FILE *ioptr;
+         ---------------------------
+          Zet  de file,  aangegeven door  'ioptr',  terug  op het
+          begin. Dit is meestal alleen zinvol voor input files.
+
+     20. system (string) char *string;
+         -----------------------------
+          Het DOS  kommando in 'string' wordt  uitgevoerd. Dit is
+          alleen   mogelijk   onder    NEWDOS/80.   Het   is   de
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 38
+
+
+          verantwoordelijkheid  van   de   programmeur   dat  het
+          uitvoerende programma niet overschreven wordt.
+
+     21. getw (ioptr) FILE *ioptr
+         ------------------------
+          Geeft  het  volgende  16-bits  woord van de  aangegeven
+          file terug. In geval van een fout  of End-Of-File wordt
+          de  waarde  EOF  teruggegeven,  maar omdat dit  ook een
+          woord-waarde kan zijn,  moeten de funkties  "feof()" en
+          "ferror()"  worden gebruikt.
+
+     22. putw (w, ioptr) FILE *ioptr;
+         ----------------------------
+          Schrijft  het 16-bits  woord  'w'  naar  de  aangegeven
+          file.
+
+     23. fileno (ioptr) FILE *ioptr;
+         ---------------------------
+          Geeft  het  adres  van  het  DOS  File  Control  Block,
+          geassocieerd met de aangegeven file, terug.
+
+
+     24. fseek (ioptr, offset, ptrname) FILE *ioptr;
+         -------------------------------------------
+          Positioneert  de aangegeven file op  een bytes positie,
+          'offset'  bytes  vanaf  het  begin  van  de  file.  Het
+          argument 'ptrname' moet NULL zijn.
+          Let op, 'offset' is een "int", geen "long"!
+
+     25. ftell (ioptr) FILE *ioptr;
+         --------------------------
+          Geeft  de  huidige  byte offset in de  aangegeven  file
+          terug,  gemeten  vanaf  het begin  van  de  file.  Deze
+          waarde kan gebruikt worden bij aanroepen van "fseek".
+
+     26. malloc (num)
+         ------------
+          Een pointer in  de heap  naar een  buffer, 'num'  bytes
+          groot, wordt  teruggegeven. De pointer  heeft de waarde
+          NULL als er geen heap ruimte meer is.
+
+     27. cfree (ptr) char *ptr;
+         ----------------------
+          De  buffer,  aangegeven  door  'ptr'  wordt aan de heap
+          teruggegeven.  Deze  buffer  moet  via   "malloc"   (of
+          "calloc")  zijn aangevraagd. Allokatie en vrijgeven van
+          buffers mag in willekeurige volgorde plaatsvinden.
+
+     28. calloc (num, size)
+         ------------------
+          Allokeert ruimte  voor 'num' data items, elk van 'size'
+          groot, en zet deze ruimte op  0.  Een pointer naar deze
+          ruimte wordt teruggegeven, of  NULL als  er onvoldoende
+          ruimte is.
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          6. Standaard I/O     Pagina 39
+
+
+     29. printf (format, a1, .... ,an) char *format;
+         -------------------------------------------
+          De  argumenten   'a1'   ..  'an'  worden,  volgens   de
+          specifikaties  van  'format', op  "stdout"  geprint. De
+          funktie  "printf"  wordt  beschreven  in  Kernighan  en
+          Plauger pp. 145. De toegestane specifikaties zijn:
+
+            d  signed integer
+            u  unsigned integer
+            x  hexadecimale output
+            o  oktale output
+            c  character
+            s  string
+
+          Zie de file "printf/c" voor meer precieze details.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          Reserve              Pagina 40
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+

@@ -49,7 +49,15 @@ addsym(sname, id, typ, value, lgptrptr, varclass)
 	cptr[IDENT]=id;
 	cptr[TYPE]=typ;
 	cptr[CLASS]=varclass;
+#ifdef MSC
+	ASSERT(OFFSIZE == BPW);
+#endif
+#ifdef BUGFIXES
+	iptr = cptr + OFFSET;
+	*iptr = value;
+#else
 	putint(value, cptr+OFFSET, OFFSIZE);
+#endif
 	cptr3 = cptr2 = cptr + NAME;
 	while(an(*sname)) *cptr2++ = *sname++;
 
@@ -69,7 +77,7 @@ nextsym(entry) char *entry;
 	while (*entry++ >= ' ') ;	/* find length byte */
 	return entry;
 }
-
+#ifndef BUGFIXES
 /*
 ** the next two functions are nice but slow up
 ** compilation. Pointers to integers can do the job
@@ -95,6 +103,8 @@ void putint(i, addr, len) char *addr; int i, len; {
 		i = i>>8;
     }
 }
+#endif
+
 
 /*
 ** test if next input string is legal symbol name
@@ -188,6 +198,9 @@ POP	HL
 PUSH HL
 PUSH BC
 	LD	A,L
+	if 1
+	call cioupp
+	else
 ; TODO call CIOUPP::
 	CP	'a'
 	JR	C,UPPR10
@@ -195,7 +208,9 @@ PUSH BC
 	JR	NC,UPPR10
 	SUB	32
 UPPR10:
+	endif
 	JP	CCC5##; CCSXT
+
 #endasm
 }
 #endif
@@ -272,28 +287,7 @@ numr10:
 */
 an(c)  char c;
 {
-#ifdef MSC
 	return ((alpha(c))|(numeric(c)));
-#else
-#asm
-	pop	bc
-	pop	hl
-	push hl
-	push bc
-	push hl
-	push hl
-	call alpha
-	pop	bc
-	pop	de
-	ld	a, h
-	or l
-	ret	nz
-	push de
-	call numeric
-	pop	bc
-;	ret
-#endasm
-#endif
 }
 
 /*

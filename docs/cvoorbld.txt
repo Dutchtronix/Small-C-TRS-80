@@ -1,0 +1,504 @@
+
+
+     TRS-80 Small-C V2.0         2. Voorbeeld Sessie   Pagina 6
+     
+     
+
+     
+     
+     
+     2. Voorbeeld Sessie.
+     
+     
+     2.1 Inleiding
+         ---------
+     
+     
+     Teneinde een duidelijk beeld  te geven van de werkwijze  met
+     TRS-80  Small-C V2.0,  wordt  hieronder een  voorbeeldsessie
+     beschreven.  De  TRS-80  omgeving kent  niet een  specifieke
+     assembler, maar meerdere. Met deze C  kompiler is  het moge-
+     lijk met drie verschillende assemblers te werken namelijk:
+     
+        -Macro80  (tezamen met Link80 verreweg de beste)
+        -Instant Assembler  (een speciale assembler
+                             met link faciliteiten)
+        -Edtasm (ook Edtasm/Plus).
+     
+     Geen van deze assemblers wordt  bijgeleverd; er dient bij uw
+     komputer een  assembler aanwezig te zijn  voordat met TRS-80
+     Small-C V2.0  gewerkt kan worden. Voor elk van  deze  assem-
+     blers  wordt  hieronder  een  voorbeeld  sessie  beschreven.
+     Kiest u  s.v.p. het voorbeeld  dat  in uw situatie  van toe-
+     passing is.
+     
+     
+     Het C programma, dat we zullen gebruiken is het volgende:
+     
+          #include <stdio/h>
+          main()
+          {
+            printf("Hello World\n");
+          }
+     
+     De  file  "hello/c"  op  de distributie schijven  bevat  dit
+     programma.  Na  kompilatie  m.b.v.  de TRS-80  Small-C  V2.0
+     kompiler, moet dit programma de tekst:
+     
+          Hello World
+     
+     afdrukken.
+     
+     Omdat dit programma reeds op schijf  aanwezig  is, hoeven we
+     deze tekst niet  in te typen. De  wijze waarop C programma's
+     ingetypt moeten worden, wordt aan het  einde van deze sessie
+     behandeld.
+     We  gaan  nu  over naar  de  kompilatie;  de volgende  files
+     moeten aanwezig zijn in een van de diskdrives:
+     
+          CC/CMD         TRS-80 Small-C V2.0 kompiler
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0         2. Voorbeeld Sessie   Pagina 7
+     
+     
+          C20ERRS/DAT    teksten van eventuele foutmeldingen
+          STDIO/H        standaard I/O bibliotheek deklaraties
+          HELLO/C        het programa zelf
+     
+     Ook  moet  er  voldoende vrije  schijfruimte  zijn  voor  de
+     benodigde tussenfiles en de resultaat file.
+     De C kompiler genereert  assembler kode  en, omdat er bij de
+     TRS-80 niet  een specifieke assembler hoort,  dient er geko-
+     zen  te worden  welke  assembler gebruikt  zal worden.  Deze
+     vraag  hangt  natuurlijk  af van de  vraag  welke  assembler
+     beschikbaar is; er wordt  immers geen assembler bijgeleverd.
+     Als  beste assembler wordt Macro80/Link80  geadviseerd, ver-
+     volgens  Instant  Assembler  en  tenslotte  Edtasm,  waarbij
+     Edtasm/Plus weer de voorkeur  verdient.  Voor elk  van  deze
+     assemblers wordt nu een voorbeeldsessie besproken.
+     
+     2.2: Edtasm
+          ------
+     
+     Bij gebruik van Edtasm moeten de files
+
+          CCMAIN/ASM en
+          CCLIB/V20
+
+     aanwezig zijn.
+     Het programma wordt gekompileerd door het kommando:
+
+          CC HELLO -E
+
+     De kompiler  genereert nu de file HELLO/ASM. We gaan  verder
+     door Edtasm te starten en het kommando:
+
+          L D=HELLO/ASM   (of LD HELLO bij Edtasm/Plus)
+
+     De door de kompiler  gegenereerde assembler wordt nu in  het
+     geheugen  geladen.  Nu moet  een deel  van  de support kode,
+     welke bij de  TRS-80  Small-C V2.0 kompiler  hoort,  geladen
+     worden door:
+
+          L D=CCMAIN/ASM   (of LDA CCLIB bij Edtasm/Plus)
+
+     De  vraag of er "gekonkateneerd" moet worden, dient met  'Y'
+     beantwoord  te worden. Hierna kunnen we assembleren naar  de
+     file "HELLO/CMD" door:
+
+          A/NS/NL       A HELLO /NL/NS  bij Edtasm/Plus
+          D (disk output)
+          HELLO/CMD
+          C (kreeer file)
+
+     Door  middel  van  het 'B'  kommando ('K'  bij  Edtasm/Plus)
+     verlaten  we Edtasm.  We  kunnen  nu "HELLO"  intypen om het
+     resultaat te bekijken.
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0         2. Voorbeeld Sessie   Pagina 8
+     
+     
+     2.3: Macro80/Link80
+          --------------
+
+     Bij gebruik van Macro80/Link80 moet de file
+
+          CCLIB/REL
+
+     aanwezig zijn. We kompileren het C programma door:
+
+          CC HELLO
+
+     Er wordt nu een  file  HELLO/MAC gegenereerd, welke geassem-
+     bleerd wordt door het kommando:
+
+          M80 HELLO=HELLO
+
+     De  file HELLO/REL wordt  gemaakt welke gelinkt kan  worden;
+     tevens maken we direkt de resultaat file HELLO/CMD aan:
+
+          L80 HELLO,HELLO-N-E
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0         2. Voorbeeld Sessie   Pagina 9
+     
+     
+     2.4: Instant Assembler
+          -----------------
+     
+     Bij gebruik  van Instant  Assembler moet de  file  CCLIB/IAS
+     aanwezig zijn. We kompileren het programma door:
+     
+          CC HELLO -I
+     
+     De  file HELLO/ASM wordt nu  gegenereerd; deze file  konver-
+     teren we naar het IAS (Instant ASsembler) formaat door:
+     
+         DSKIAS
+         IE HELLO/ASM
+         OS HELLO/IAS
+         EX
+     
+     De  nieuwe  file HELLO/IAS  linken  we tot een exekuteerbaar
+     programma door:
+     
+          DSKLLB48
+          LD HELLO/IAS
+          5200          ;begin adres
+          CCLIB/IAS
+          <enter>       ;sequential load
+          <break>       ;beeindig laden
+          OO HELLO/CMD
+          <enter>       ;first address
+          <enter>       ;final address
+          5200          ;start address
+          <enter>       ;beeindig
+          JP 402D       ;verlaat Instant Assembler
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0         2. Voorbeeld Sessie   Pagina 10
+     
+     
+     2.5: Editors
+          --------
+
+
+     Evenals het  feit dat  er geen  standaard  assembler bestaat
+     voor de  TRS-80,  is  er  ook geen standaard  editor. Daarom
+     ondersteunt   de  TRS-80  Small-C  V2.0  kompiler   meerdere
+     editors te weten:
+     
+          Basic
+          Edtasm
+          Scripsit, Pencil, Edit80
+     
+     Een ander probleem is  het feit dat de taal  C  ASCII tekens
+     gebruikt,  welke  niet  standaard op de  TRS-80  beschikbaar
+     zijn. Ook hiervoor  zijn  voorzieningen getroffen. Paragraaf
+     3.1 over  het gebruik  van de TRS-80  Small-C  V2.0 kompiler
+     beschrijft  alle details. Hier zullen we als voorbeeld laten
+     zien hoe  op  een  ongemodificeerde  TRS-80  met  BASIC  als
+     editor het C voorbeeld programma ingetypt kan worden.
+     
+     Ten eerste mag alle  tekst zowel in grote als kleine letters
+     worden ingevoerd. De output string wordt dan natuurlijk:
+     
+          HELLO WORLD
+     
+     Het  voorbeeld  bevat 3  tekens die standaard niet  beschik-
+     baar zijn:
+     
+          akkolade open    {
+          akkolade sluiten }
+          backslash        \
+     
+     Zoals in  3.1  beschreven  kunnen we de  eerste  twee tekens
+     zonder probleem vervangen door de speciale woorden
+     
+          BEGIN voor {
+          END voor }
+     
+     De  backslash (\) kan  vervangen worden door  het teken '@',
+     maar dit  moet  wel  aan de kompiler  bekend  gemaakt worden
+     door de  "-@"  switch.  Eventueel kan de  kompiler permanent
+     worden  aangepast  voor  deze  wijziging. Zie  paragraaf 3.3
+     voor  de  details.  Het programma zou er dan als  volgt  uit
+     zien:
+     
+     10   #INCLUDE <STDIO/H>
+     20   MAIN()
+     30   BEGIN
+     40     FPUTS("HELLO WORLD@N", STDOUT);
+     50   END
+     
+     Intypen kan m.b.v. Basic. De file moet gesaved worden door:
+     
+          SAVE "HELLO/C",A    Ascii optie!
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0         2. Voorbeeld Sessie   Pagina 11
+     
+     
+     
+     Kompileren naar bv. Edtasm assembler:
+     
+          CC HELLO -@ -E
+     
+     Let  op de  "-@" om  aan te geven dat de backslash vervangen
+     wordt door een '@'.
+     De verdere verwerking  van  de  gegenereerde assembler  file
+     HELLO/ASM gaat normaal; zie de beschrijving onder Edtasm.
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0         Reserve               Pagina 12
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+

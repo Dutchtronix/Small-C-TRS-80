@@ -1,0 +1,360 @@
+
+
+     TRS-80 Small-C V2.0             3. Gebruik        Pagina 13
+     
+     
+
+     
+     
+     3: Gebruik TRS-80 Small-C V2.0 kompiler
+        ------------------------------------
+     
+     3.1: Input voor de kompiler
+          ----------------------
+     
+     
+     C is een gekompileerde  taal, dat wil zeggen  dat  een  pro-
+     gramma tekst  wordt  omgezet naar  machine  taal.  Deze pro-
+     gramma  tekst is input voor de  kompiler en moet  worden in-
+     getypt en gewijzigd met behulp van een editor.
+     De TRS-80  omgeving kent  geen standaard editor. Daarom her-
+     kent de kompiler DRIE soorten files, namelijk
+     
+         - Ascii files, bij gebruik van Scripsit en Edit-80
+         - Edtasm files.
+         - Basic files
+     
+     Bij  gebruik  van Scripsit en  Basic moeten  de files met de
+     ASCII optie worden weggeschreven:
+     
+         Scripsit:  S,A FILE
+         Basic:     SAVE "FILE",A
+
+     Zie ook het bijgeleverde programma KONVERSIE, paragraaf 9.2
+     
+     
+     
+     Een tweede probleem  is,  dat de  taal  C gebruik maakt  van
+     alle ASCII  karakters, ook karakters die  niet standaard  op
+     de TRS-80 beschikbaar zijn. Deze karakters zijn:
+     
+         { } [ ] \ | ^ ~
+     
+     Teneinde toch in C op een ongemodificeerde  TRS-80 te kunnen
+     programmeren, zijn er  in  de kompiler de  volgende voorzie-
+     ningen getroffen:
+     
+     - voor de begin- en einde blok tekens { } kunnen de namen
+       BEGIN en END gebruikt worden; deze namen zijn aan de
+       kompiler bekend.
+     
+     - voor de array haken [ en ] kunnen de tekens
+       '(.' respektievelijk '.)' gebruikt worden; deze zijn
+       aan de kompiler bekend.
+     
+     - in plaats van het escape teken \ kan het teken
+       @ gebruikt worden. Dit moet als kompilatie switch
+       (zie verder 3.3) worden opgegeven. Eventueel kan dit
+       middels CCUSTOM (zie paragraaf 9.1) permanent worden
+       aangebracht.
+     
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0             3. Gebruik        Pagina 14
+     
+     
+     - de file "DEFINES/H" bevat een aantal namen, welke
+       gebruikt kunnen worden in plaats van niet beschikbare
+       tekens:
+     
+         or      ||
+         bitor   |
+         bitneg  ~
+         biteor  ^
+     
+     Om dezelfde reden als boven,  is  het voor de kompiler irre-
+     levant  of een C programma  in grote of  kleine  letters  is
+     geschreven.  Er  is  geen  verschil  (behalve  in  strings).
+     Hierdoor kunnen  ook komputers zonder "lower-case"  gebruikt
+     worden.
+     
+     
+     3.2: Output van de kompiler
+          ----------------------
+     
+     
+     Naast het  gebrek  aan  standaard  ten aanzien van  editors,
+     bestaat er voor de TRS-80  geen standaard assembler.  Dit is
+     van belang omdat de TRS-80 Small-C  V2.0  kompiler assembler
+     code genereert.  Deze assembler moet, tezamen  met eventuele
+     standaard  en/of  eigen  bibliotheken  tot  een  hanteerbaar
+     programma worden  gemaakt. Daarom  ondersteunt  de  kompiler
+     DRIE assemblers:
+     
+         - Macro80 (+Link80)
+         - Instant Assembler (+"DSKLLB")
+         - Edtasm (en Edtasm/Plus)
+     
+     De TRS-80 Small-C V2.0  kompiler kan werken met elk van deze
+     assemblers. De keuze van assembler kan  gedaan  worden  door
+     middel van een  kompilatie switch (zie  verder). De  default
+     instelling  is  Macro80;  deze  assembler  is  verreweg  het
+     prettigst  in gebruik. Deze  default instelling kan, tezamen
+     met de default extensie  van de output file, met behulp  van
+     CCUSTOM (zie paragraaf 9.1) gewijzigd worden.
+     Het  source-programma,  dat geaccepteerd wordt, is  onafhan-
+     kelijk  van  het opgegeven output format  (Edtasm input naar
+     Macro80  output kan ook!). Alle assemblers leggen echter een
+     beperking op de  lengte  van de symbolen:  6  karakters voor
+     Macro80  en Edtasm, en 5  karakters voor Instant  Assembler.
+     Het  underscore  teken  '_' mag alleen met  Macro80 gebruikt
+     worden.
+     Bij gebruik van  Edtasm wordt de standaard  bibliotheek  be-
+     schikbaar  gesteld door  middel van  een  "run-time"  pakket
+     (CCLIB/V20).  Dit  is  nodig omdat Edtasm  te  veel geheugen
+     ruimte nodig heeft om alle kode tezamen te assembleren.
+     
+     
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0             3. Gebruik        Pagina 15
+     
+     
+     3.3: Kompileren van een C programma
+          ------------------------------
+     
+     
+     De  eenvoudigste manier om  een C programma te kompileren is
+     door het volgende kommando te geven:
+     
+         CC filenaam
+     
+     De kompiler zal nu  proberen de file "filenaam/c"  te kompi-
+     leren  naar de  file  "filenaam/mac".  Waar "filenaam" staat
+     mag natuurlijk elke valide DOS filenaam staan.
+     Het is mogelijk zelf  de output filenaam te specificeren, in
+     plaats van de default door:
+     
+         CC outputfilenaam=inputfilenaam
+     
+     Het onderdrukken van de  assembler  output is  mogelijk door
+     het kommando
+     
+         CC =inputfilenaam
+     
+     Ook  mogen meerdere input files  worden opgegeven, welke dan
+     na elkaar worden gekompileerd:
+     
+         CC input1 input2 .... inputn
+     of
+         CC output=input1 input2 ..... inputn
+     
+     Default extensie  voor  de input files is /C en voor de out-
+     put file /MAC  of /ASM. Deze laatste extensie is afhankelijk
+     van de gekozen assembler.
+     
+     Ook  mogen een aantal zogenaamde kompilatie  switches worden
+     opgegeven op de kommando regel.  Deze beginnen met  een '-',
+     gevolgd  door een karakter, soms gevolgd door een nummer. De
+     switches mogen overal op de  regel,  na  'cc' voorkomen. Een
+     kompilatie met switches ziet er dan als volgt uit:
+     
+         cc filenaam -p -h -z0
+     
+     In de  hieronder volgende lijst worden de mogelijke switches
+     genoemd. Een nummer wordt aangegeven door het # teken.
+     
+         -t  De C tekst wordt gelist op de standaard output.
+             Dit gebeurt na het verwerken van de
+             #ifdef / #ifndef kommando's. Ook in-line assembler
+             wordt niet gelist.
+             Default: GEEN C tekst
+         
+         -h  De C regels waarin een funktie header voorkomt,
+             worden NIET getoond op het scherm.
+             Default: WEL tonen van funktie headers
+         
+         -p  Pauzeer NIET wanneer een kompilatie fout wordt
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0             3. Gebruik        Pagina 16
+     
+     
+             gedetekteerd. Bij zo'n pauze kan de kompilatie
+             door middel van de BREAK toets (indien werkend)
+             worden afgebroken.
+             Default: WEL pauseren
+         
+         -m  Genereer assembler kode geschikt voor Macro80.
+             Default: Macro80 output
+         
+         -e  Genereer assembler kode geschikt voor Edtasm.
+             Default: Macro80 output
+         
+         -i  Genereer assembler kode geschikt voor Instant
+             Assembler.
+             Default: Macro80 output
+         
+         -z# Genereer een maximum aantal DEFW 0 statements.
+             Hierbij  stelt # het maximum aantal voor.Dit is van
+             belang bij initiatie van variabelen.
+             Default: 256 maal DEFW 0
+         
+         -l# Genereer interne assembler labels, startend bij
+             nummer #. Indien output voor Edtasm of Instant
+             Assembler wordt gegenereerd, starten de regel
+             nummers bij dit nummer. Dit is van belang in geval
+             van aparte C kompilatie eenheden.
+             Default: 1
+         
+         -d# Gebruik een tabel van # eenheden voor de #define
+             statements. Hiermee kunnen bijzondere omstandig-
+             digheden worden opgevangen.
+             Default: 200 eenheden
+         
+         -s# Gebruik een tabel van # eenheden voor de statische
+             symbolen (funkties en globale variabelen). Hiermee
+             kunnen bijzondere omstandigheden worden opgevangen.
+             Default: 200 eenheden
+         
+         -@  Gebruik het karakter '@' als escape teken in plaats
+             van het normale '\' teken.
+             Default: '\'
+         
+         
+     Al deze  default  instellingen kunnen  met  behulp  van  het
+     utility CCUSTOM  (zie paragraaf  9.1) worden gewijzigd.  Dit
+     voorkomt  dat,  bij aktief gebruik, steeds dezelfde switches
+     moeten worden ingetypt.
+     
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0             Reserve           Pagina 17
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+

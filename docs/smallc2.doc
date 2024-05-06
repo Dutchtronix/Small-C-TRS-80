@@ -1,0 +1,189 @@
+
+        SMALL-C VERSION 2.02 USERS NOTES
+
+I. Introduction
+
+Small-C version 2 is an extension of the version 1 compiler,
+written by J.E. Hendrix and placed in the public domain.
+
+The Small-C compiler supports a subset of the C programming
+language and is configurable to systems with different
+memory capacities by deselecting some of the features.
+
+II. Features
+
+Small-C version 2 has all of the features of the version 1
+compiler, with the following additions:
+
+  1. Expressions
+        "&&" (logical 'and')
+        "||" (logical 'or')
+        "|="
+        "^="
+        "&="
+        "+="
+        "-="
+        "*="
+        "/="
+        "%="
+        ">>="
+        "<<="
+
+  2. Program Control
+        for (expr1 ; expr2 ; expr3) statement;
+        do statement while (expression);
+        switch (expression) {
+          case constant-expr:
+          default:
+        }
+        goto label;
+        label:
+
+  3. External Declarations
+        extern type name...;
+
+  4. Preprocessor Commands
+        #ifdef name
+        #endif
+        (note: #ifdef's may be nested)
+
+  5. Initializers
+        Initializers are accepted for global declarations only:
+
+            type name = {init_list};
+
+  6. I/O
+        Version 2 supports stdin, stdout, stderr and stdlst.  I/O
+        redirection is also supported for stdin and stdout (see
+        I/O library section, below).
+
+III. Using the Compiler
+
+One of the first lines in your program should include the I/O
+library by using the "#include" command:
+
+        #include  "stdiol.h"
+
+If you are using the "printf" function, the C-library needs to be included
+as well:
+
+	#include "libl.h"
+
+When command line processing is selected (the default), the compiler
+is invoked with a command like:
+
+        smc [switches] [file...]
+
+The output of the compiler is sent to standard out and can be
+redirected to a file, e.g.:
+
+        smc -c file.c >b:file.mac
+
+The following compiler switches are available:
+
+        -a      signal alarm (bell) on error
+        -b#     bump starting label numbers by #
+        -c      generate M80 compatable code
+        -l#     list device file descriptor (0-4)
+        -m      monitor. print function name as it's compiled
+        -p      pause on error, waiting for keyboard input
+
+Case is not significant and is internally converted to upper case
+for comparisons.
+
+The output of the compiler must then be run through an assembler
+and linker or loader.  Using M80 and the above example, it would
+look like:
+
+        m80 =file.mac
+        l80 iolib,file,call,file/n/e
+
+The file 'iolib.rel' contains the I/O library and runtime support.  The
+file 'call.rel' contains the compiler library.
+
+If the "printf" function is being used, the C-library must also be linked:
+
+	l80 iolib,file,call,lib,file/n/e
+
+IIIa. Using the Compiler With ASM
+
+When using the ASM assembler, the I/O and compiler librarys must be
+included in the source as include files, since no linking facility is
+available.  In addition, the file "stdioa.h" should be included instead
+of the file "stdiol.h".  The first few lines of the C program, then
+would look like:
+
+        #include "stdioa.h"
+        #include "iolib.asm"
+        #include "call.asm"
+
+To compile and run would require something similar to:
+
+        smc file.c >b:file.asm
+        asm file.xyz
+
+If you are using the C library routines - such as printf - you want to
+append the contents of libasm.c onto the END of the source file.
+
+IV. I/O and Runtime Library
+
+The I/O and runtime library supports the following functions:
+
+        cpm(cpm_function#, input_parameter)
+        exit()
+        abort(error_code)
+        fopen(name, mode)
+        fclose(file_des)
+        unlink(name)
+        getc(file_des)
+        fgetc(file_des)
+        getchar()
+        gets(string)
+        fgets(string, length, file_des)
+        putc(char, file_des)
+        fputc(char, file_des)
+        putchar(char)
+        puts(string)
+        fputs(string, file_des)
+        lddr(source, dest, count)
+        ldir(source, dest, count)
+
+The functions "lddr" and "ldir" perform the Z-80 instructions
+LDDR and LDIR respectively.  The function "fgets" keeps the
+terminating linefeed as part of the string, the other functions
+should behave as you would expect them to.  The names "stdin",
+"stdout", "stderr" or "stdlist" can be substituted for "file_des"
+in any of the above functions.  If standard I/O has been redirected,
+the appropriate file will be read from or written to.  "Stderr"
+always writes to the console.  "Fgetc" is identical to "getc" and
+"fputc" is identical to "putc".
+
+Don't forget to #include "stdiol.h".  (The compiler will also
+accept #include <stdiol.h> or just #include stdiol.h with no delimiters.)
+
+V. Bugs
+
+All of the bugs that I am aware of have been fixed.  This includes the
+while statement fixes that were submitted to Dr. Dobbs and the optimizer
+bug.
+
+VI. Compiling The Compiler
+
+There are #ifdef's in the code to allow bootstrapping a version of the
+Small-C compiler by using Software Toolworks C80 C compiler.  [This
+should no longer be necessary as the Small-C compiler will compile
+itself, but is included as convenience to the developer.]  The
+#define's for the bootstrapping compiler are in the file "cc.def" and
+is currently setup to compile using the Small-C compiler itself.
+The file "cc80.def" is a cc.def file for compiling with C80; "smcc.def"
+is the cc.def file for compiling with Small-C.  The files MAKE.SUB
+and MAKES.SUB show the compiler switches required for C80 and Small-C,
+respectively.
+
+Another change that needs to be made when compiling with C80
+is to change the #include "stdiol.h" to #include "std.h".  This
+affects the files CC1.C, CC2.C, CC3.C and CC4.C.
+
+If a linker is not available and the compiler is to be compiled as
+a single entity, comment out the #define SEPERATE line in CC.DEF.
+

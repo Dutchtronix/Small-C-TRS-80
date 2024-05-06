@@ -24,6 +24,7 @@ typedef uint8_t BOOL;
 #define TRUE 1
 #define CR 13
 #define LF 10
+#define ESC 27
 
 #ifdef MSC
 #undef EOF

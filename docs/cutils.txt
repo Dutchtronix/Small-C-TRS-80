@@ -1,0 +1,1081 @@
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 53
+
+
+
+
+     9. Ondersteunende Utilities van TRS-80 Small-C V2.0
+        ------------------------------------------------
+
+
+
+     9.1: CCUSTOM/CMD         Small-C aanpassingen
+          -----------
+
+
+     Niet elk komputer systeem  is hetzelfde! Daarom is  het  mo-
+     gelijk de TRS-80 Small-C  kompiler aan  te passen  aan eigen
+     wensen.  Hieronder vallen  met name de  default instellingen
+     van de kompilatie  switches. Met  dit programma  kunnen drie
+     TRS-80  Small-C  programma's ook "gepatched"  worden,  zodat
+     eventuele  verbeteringen kunnen worden aangebracht. Mits met
+     verstand gebruikt, kan via deze patch  optie het systeem nog
+     meer  aan eigen wensen worden aangepast.  Na  start van  het
+     programma verschijnt het menu met de mogelijke funkties.
+
+
+     Patch funktie
+     -------------
+
+     Deze funktie is bedoeld  om incidentele  wijzigingen aan  te
+     brengen in  een van de  TRS-80 Small-C kompiler programma's.
+     Ook  kan  zo'n  programma  hiermee bekeken  worden.  CCUSTOM
+     vraagt,  na  het  kiezen  van  optie 2, welke  file  u  wilt
+     patchen, en  de drive, waarop  deze file zich  bevindt. Ver-
+     volgens wordt het sektor  nummer en het byte nummer  (binnen
+     de   sektor)  gevraagd.   Daarna  wordt  de  huidige  inhoud
+     getoond.  De volgende invoer  is  nu  mogelijk:  een  nieuwe
+     (hexadecimale) waarde, welke de huidige inhoud  vervangt; na
+     de  wijziging wordt  de volgende  byte positie  getoond. Een
+     ENTER  (zonder  iets  ingetikt te hebben) zal de huidige in-
+     houd ongemoeid laten en gaat door naar  de volgende lokatie.
+     Een "S"  (van "STOP") gaat terug  naar een voorgaande vraag.
+     U kunt dan een andere byte  binnen de sektor kiezen of  weer
+     een "S". Dan  kan een andere sektor bekeken worden.  Wanneer
+     nu  weer een "S" gegeven wordt, verlaat  u de patch optie en
+     verschijnt het menu weer.  Eventuele wijzigingen worden  di-
+     rekt op schijf aangebracht!
+
+
+     De belangrijkste funktie van  CCUSTOM is momenteel het  wij-
+     zigen van  de  diverse defaults  voor Small-C  V2.0 kompiler
+     switches.  Hieronder volgt een beschrijving van de lokaties,
+     waarmee defaults  kunnen  worden  veranderd. De  lokatie  is
+     altijd in  SECTOR 0 van de kompiler: CC/CMD, file nummer  0.
+     Hieronder  volgt  een  tabel,  welke  voor  elke  kompilatie
+     switch de  offset in sector 0  van CC/CMD  aangeeft, de hui-
+     dige default waarde en de  in  te vullen waarde voor een an-
+     dere default instelling.
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 54
+
+
+
+     Alle waarden  moeten als hexadecimale byte worden ingevoerd;
+     16 bits getallen als 2 losse bytes!
+
+
+
+
+                       default    nieuwe
+     switch  offset    waarde     waarde   kommentaar
+
+       -h     0AH        01H        00H    toon geen headers
+       -p     0BH        01H        00H    pauzeer niet bij fouten
+       -m     0CH        00H        00H    Macro-80 output
+       -e     0CH        00H        01H    Edtasm output
+       -i     0CH        00H        02H    Instant Assembler output
+       -t     12H        00H        01H    toon C tekst
+       -@     13H        5CH (\)    40H (@) escape teken
+       -l     22H        00H        #      nieuwe waarde (Lop,Hop)
+              23H        00H
+              15H        B0H        start regelnummer Edtasm
+              16H        B0H        in speciaal formaat:
+              17H        B0H        B1 B2 B3 B4 B5 = 12345
+              18H        B0H
+              19H        B1H
+       -s     1CH        C8H        #      nieuwe waarde (Lop,Hop)
+              1DH        00H
+       -d     1EH        C8H        #      nieuwe waarde (Lop,Hop)
+              1FH        00H
+       -z     20H        00H        #      nieuwe waarde (Lop, Hop)
+              21H        01H
+       exten- 0EH        4DH (M)    3 andere ascii karakters
+       sie    0FH        41H (A)
+              10H        43H (C)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 55
+
+
+
+     9.2: KONVERSI   file formaten konverteerder
+          --------
+
+
+     Dit  utility is bedoeld als  hulp  in de "editor jungle" van
+     de  TRS-80. Er  is namelijk geen standaard  editor  voor  de
+     TRS-80 Mod. I of III.  Nee,  er  zijn in principe 3  soorten
+     editors: de Basic interpretator,  de  Editor/Assembler en de
+     (ASCII)  tekstverwerkers.  Basic  kan  als  editor  gebruikt
+     worden  door het  SAVE "NAAM",A kommando. EDTASM (ook EDTASM
+     plus  van MICROSOFT) kan  als editor gebruikt worden door de
+     tekst  naar schijf te schrijven (WD  of W D= ) en  SCRIPSIT,
+     PENCIL en ook EDIT80  (met UNSEQ switch) doen  niets  anders
+     dan de  tekst naar schijf schrijven (gebruik bij SCRIPSIT de
+     S,A  optie!).  Alle drie de editors zijn  bruikbaar, in  die
+     zin  dat  de  TRS-80 Small-C  kompiler  alle soorten  files,
+     welke  met  deze editors naar  schijf geschreven kunnen wor-
+     den,  kan  lezen. Deze files  hebben  wel allemaal een ander
+     formaat op schijf!
+
+
+     Welke  editor u  gebruikt  is  een kwestie van smaak  en be-
+     schikbaarheid. Basic is bekend,  maar  erg  langzaam. EDTASM
+     is beter en sneller;  bovendien  worden "tabs", die veel ge-
+     bruikt worden in  TRS-80  Small-C  source  programma's, niet
+     omgezet naar  spaties,  hetgeen  ruimte spaart. SCRIPSIT, en
+     in mindere mate  PENCIL,  zijn het allerprettigst  en boven-
+     dien: SCRIPSIT is  ook supersnel  wat  betreft het schrijven
+     naar disk!  In deze  editors  worden tabs naar spaties omge-
+     zet,  wat disk ruimte kost, maar er hoeven geen regelnummers
+     opgeslagen te worden.
+
+
+     Iedereen  met een TRSDOS  of een  NEWDOS(80)  systeem  heeft
+     daarbij Basic, zodat iedereen in  elk geval aan de slag kan.
+     Alle source programma's zoals  deze op distributie  schijven
+     A en B staan, staan  evenwel in SCRIPSIT  formaat. Het  pro-
+     gramma  KONVERSI/CMD maakt het mogelijk die source  program-
+     ma's om te zetten naar een van de  andere formaten, zodat de
+     favoriete of beschikbare editor bruikbaar wordt. Dit  is een
+     eenmalige  aktie! Deze aktie dient alleen om de programma's,
+     zoals ze  op de schijven  staan, van  een  ander  formaat te
+     voorzien.  Hierna kan  met de  nieuwe editor  verder gewerkt
+     worden, zonder  KONVERSI;  de kompiler kan namelijk wel alle
+     formaten lezen!  Dit  omzetten kan  ook in  andere  gevallen
+     bruikbaar zijn. Bijvoorbeeld  voor  diegenen die over willen
+     gaan van  EDTASM op M80/L80. De  assembler source files moe-
+     ten dan geschikt gemaakt  worden voor  EDIT80 (of SCRIPSIT).
+     M80  leest  namelijk  niet alles! Ook iemand die  een  BASIC
+     programma   heeft   als  tekst,  zonder   regelnummers,  kan
+     KONVERSI gebruiken.
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 56
+
+
+     KONVERSI kent 6 mogelijkheden, welke uit  het  menu blijken,
+     dat verschijnt  als het programma gestart wordt. Deze  moge-
+     lijkheden  betreffen   konversie  tussen  EDTASM,  BASIC  en
+     SCRIPSIT. Na  een keuze door middel van een cijfer, wordt de
+     filenaam  van de  oorspronkelijke file gevraagd,  daarna  de
+     naam van  de nieuw  te maken  file. De break  toets  (indien
+     "enabled"!) kan gebruikt worden om  terug  te keren naar het
+     menu.  Als  beide namen korrekt zijn ingevuld, start de kon-
+     versie. Op het  scherm verschijnt de inhoud van de  nieuw te
+     maken file. Wanneer EDTASM  de  oorspronkelijke  editor was,
+     zal  KONVERSI  de daarin  voorkomende  tabs expanderen  naar
+     spaties.  KONVERSI  leest ook  files, aangemaakt met  EDTASM
+     plus  van Microsoft, welke  weer  iets  anders  van  formaat
+     zijn.
+
+
+     Indien u alleen BASIC heeft, kunt u aan de  slag met een van
+     de source programma's op  de distributie schijven door  een-
+     malig  KONVERSI te  draaien, optie 5: SCRIPSIT  naar  BASIC.
+     Zorg wel voor genoeg schijfruimte! De resulterende file  kan
+     in  BASIC  via  LOAD "FILENAAM"  binnen gelezen  worden.  Na
+     editen moet met  SAVE "FILENAAM",A de  file terug geschreven
+     worden. De  TRS-80 Small-C kompiler  kan deze file nu kompi-
+     leren. De oorspronkelijke source file kan  nu  van de (geko-
+     pieerde) schijf verwijderd worden.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 57
+
+
+
+     9.3: MRBUG/CMD     Small-C dynamische debugger
+          ---------
+
+
+     De TRS-80  Small-C  kompiler vertaalt een source  programma,
+     via  assembler,  naar  machine kodes.  In  tegenstelling tot
+     BASIC is  het daarom  niet mogelijk, tijdens de  uitvoering,
+     het  oorspronkelijke  programma te zien  (behalve  op papier
+     natuurlijk).  Ook is het niet  mogelijk  de  waarden  van de
+     diverse variabelen even op  te vragen via hun naam  (PRINT I
+     o.i.d.) Een van de mogelijkheden om  toch inzicht te krijgen
+     in  de loop van  het programma, is het  regelmatig afdrukken
+     van  een aantal variabelen in het source programma  met  be-
+     hulp van "printf".  Dit is  evenwel een statische maatregel;
+     willen  we  iets anders zien,  dan moet er opnieuw  gekompi-
+     leerd worden!
+
+
+     Een alternatief  is het bekijken  van de resulterende machi-
+     nekodes. Dit is een wat  lastiger  karwei; het veronderstelt
+     namelijk  kennis  van de Z-80  machine  taal.  Een  volledig
+     begrijpen en  volgen van  een vertaald TRS-80  Small-C  pro-
+     gramma  is niet  eenvoudig, maar  is gelukkig ook  niet vaak
+     nodig.  Toch is  er  een  debugger  aanwezig  bij  de TRS-80
+     Small-C kompiler, namelijk MRBUG/CMD. Deze  maakt  het moge-
+     lijk alles  te  bekijken, zowel de data in het geheugen, als
+     de machine  kode  (symbolisch),  de Z-80 CPU  en de geheugen
+     stack.  Op  die manier kunnen  we het globale datagebied be-
+     kijken, eventueel  de dynamische  stack,  d.w.z. het  lokale
+     datagebied en de  funktie aanroepen. Ook  kan gevolgd worden
+     tot  waar het programma  goed loopt en  waar  het  fout gaat
+     door stap  voor  stap verder  te gaan en door breakpunten te
+     zetten. Hierna volgt een beschrijving van de aanroep  van de
+     debugger  en  alle   beschikbare  kommando's.  Wel  is   het
+     belangrijk te  weten dat de debugger in  het  geheugen staat
+     op  de adressen F000H-FF3FH (V2.0). Dit betekent dat 48K Ram
+     nodig is! Voor  diegenen die  in 32K willen werken is aange-
+     paste   versie  beschikbaar,  evenals  voor  mensen  die  de
+     debugger ergens anders willen  hebben. Wanneer MRBUG geladen
+     wordt, past het de lokatie,  welk aangeeft hoeveel  geheugen
+     beschikbaar is  in  de machine  (HIMEM genaamd), aan voor de
+     aanwezigheid  van MRBUG. Hierdoor werkt tpbug goed samen met
+     allerlei TRS-80 Small-C  programma's, omdat  deze HIMEM  ge-
+     bruiken.  Het exit kommando Q zet de  oorspronkelijke waarde
+     van HIMEM  weer terug, tenzij  HIMEM  tussentijds  gewijzigd
+     blijkt.
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 58
+
+
+     GEBRUIK
+     -------
+
+
+     MRBUG  wordt  gestart  door de  naam in te  tikken.  Wanneer
+     achter deze naam  een  andere naam  wordt getypt,  veronder-
+     stelt  MRBUG dat dit een machine kode  file is welke we wil-
+     len bekijken.  MRBUG  haalt deze  file  dan  van  schijf  en
+     plaatst de kodes in  het geheugen  vanaf het  laadadres. De-
+     fault extensie van deze laatste file is /CMD. Bijvoorbeeld:
+
+          MRBUG PRIEM
+
+     Tevens wordt  het  "Current Address" op het start adres  van
+     de geladen file gezet; dit Current Address is de  waarde van
+     de Program Counter (PC) en  wordt  gebruikt voor  kommando's
+     als List,  Dump, Step en Go.  MRBUG werkt volledig hexadeci-
+     maal,  dat  wil  zeggen:  ingetypte  waarden  worden  altijd
+     hexadecimaal bekeken. Een veelgebruikte  toets  in MRBUG  is
+     de  break-toets. Hiermee  kunnen kommando's  afgebroken wor-
+     den. Maar deze toets  is niet altijd "enabled" in de TRS-80,
+     bv.  niet onder TRSDOS  2.3 en NEWDOS 2.1. Zie het programma
+     BREAK op  distributie schijf A. Wanneer  de break-toets niet
+     aanstaat,  kan  ook de TRS-80 "escape"  gebruikt  worden  om
+     kommando's  te  onderbreken.  Dit  is  "SHIFT-PIJL  OMHOOG".
+     Tijdens  de uitvoering  van  kommando's  kan  er  gepauzeerd
+     worden door de spatiebalk te gebruiken. Een  volgende spatie
+     laat  MRBUG 1  stap  verder  gaan; de ENTER toets heeft  als
+     effekt dat MRBUG op volle snelheid doorgaat.
+
+
+
+     KOMMANDO'S
+     ----------
+
+     Het gebruik van  MRBUG  is  flexibel;  na de prompt "mrbug>"
+     kan een  kommandolijn  ingetypt worden. Deze  mag in  kleine
+     letters zijn; ook mogen er zoveel spaties voor en  tussen de
+     kommandoletters  resp.  parameters  staan als  gewenst.  Een
+     kommando  is  1  letter  groot,  gevolgd  door  de eventuele
+     parameters. Wanneer een kommando niet herkend wordt,
+     resulteert dit in een "Command Error". Wanneer er te  weinig
+     parameters   worden   meegegeven   resulteert  dit   in  een
+     "Parameter Error". Te veel  parameters worden  genegeerd. De
+     volgende kommando's worden herkend:
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 59
+
+
+          1.  B       zoek een Byte
+          2.  C       Change geheugen of registers
+          3.  D       Dump geheugen
+          4.  F       Fill geheugen
+          5.  G       Go naar programma
+          6.  H       Hexadecimaal rekenen
+          7.  I       Input van een I/O poort
+          8.  L       List geheugen symbolisch
+          9.  M       Move geheugen
+          10. O       Output naar een I/O poort
+          11. Q       Verlaat MRBUG
+          12. R       display Registers
+          13. S       Single Step
+          14. T       Bekijk of wijzig symbolen tabel
+          15. W       zoek een Woord
+          16. X       Verwissel twee geheugen gebieden
+
+
+     
+
+
+          1. BYTE
+          -------
+
+     In het TRS-80  geheugen  kan naar een bepaalde byte  gezocht
+     worden door het kommando "B start end  waarde". Start en End
+     zijn geheugen  adressen, welke  de range bepalen  waartussen
+     gezocht  wordt. Waarde is de  byte  die gezocht moet worden.
+     Na de ENTER  zal MRBUG  de adressen laten zien, waar de byte
+     staat, plus de volgende byte.
+
+
+          2. CHANGE
+          ---------
+
+     Het kommando C heeft  een bijzondere werking  in die zin dat
+     het zowel  op  het  geheugen werkt,  alsook op de registers.
+     Hiertoe moet na de letter  C een nadere aanduiding komen, te
+     weten M voor  het wijzigen van het geheugen en een  register
+     naam voor het  wijzigen van dat  register. Hierna  moet,  in
+     geval van  M, het geheugen  adres komen (gescheiden door een
+     spatie!), in geval van een register de nieuwe waarde. Bijv:
+
+          C M 5200    wijzig geheugen lokatie 5200H en volgende
+          C HL 3C00   stop 3C00H in HL
+          C PC 6000   zet de Program Counter op 6000H
+          C SP DFFF   zet Z-80 Stack Pointer op DFFFH
+
+     MRBUG  kent  alleen de primaire register set van de Z-80! De
+     volgende register namen worden herkend door MRBUG:
+
+          A, BC, DE, HL, IX, IY, SP, PC
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 60
+
+
+
+     Na het wijzigen  van  een register  worden de  registers ge-
+     toond  (als R kommando) ter kontrole. Bij het  wijzigen  van
+     een geheugen lokatie, wordt  de inhoud  van het adres,  welk
+     meegegeven is in de kommando regel,  getoond. Er kan  nu een
+     nieuwe  waarde worden  ingetypt,  die  de oude vervangt. Een
+     ENTER  of Pijltje  Omhoog  bevestigt  de  vervanging. Alleen
+     ENTER Pijltje Omhoog  laat de  oude  waarde  intakt.  Hierna
+     wordt  de  volgende  (bij  ENTER)  of het  vorige adres (bij
+     Pijltje Omhoog) getoond,  welke weer vervangen  kan  worden.
+     Het C M kommando wordt verlaten door Break (of Escape).
+
+
+          3. DUMP
+          -------
+
+     Het  dump  kommando  D  accepteert tot  2 adressen,  die  de
+     geheugen  range  afbakenen,  welk  getoond wordt.  Bij  geen
+     adres wordt getoond vanaf  de huidige PC waarde; als er geen
+     tweede adres  wordt meegegeven, loopt  de  range  tot FFFFH.
+     Het  geheugen wordt  getoond (zowel  hexadecimaal,  16 bytes
+     per regel, steeds 2 bytes naast  elkaar) als ook  als  ASCII
+     waarden (ook 16 bytes, op dezelfde  regel). Niet displayable
+     ascii's  worden  als "."  getoond. Per  regel kan gepauzeerd
+     worden  via de  spatiebalk;  de  break onderbreekt het  Dump
+     kommando.
+
+
+          4. FILL
+          -------
+
+     Met F kan  een  stuk geheugen gevuld worden met een bepaalde
+     waarde. F verwacht minimaal 2 parameters,  welke de te  vul-
+     len geheugen range afbakenen.  De derde  parameter  geeft de
+     vul-waarde; deze is default 0.
+
+
+          5. GO
+          -----
+
+     Met G kan een programma vervolgd worden vanaf  de huidige PC
+     waarde.  Bovendien kunnen er tot 3 breakpunten  worden inge-
+     steld.  Dat   zijn  adressen,  waarop  het  uit   te  voeren
+     programma  stopt  en  naar  MRBUG  terugspringt,  indien  de
+     Program Counter deze  waarde krijgt. Bij het  stuiten op een
+     breakpunt,  worden alle  overige breakpunten direkt  verwij-
+     derd. Deze faciliteit is geimplementeerd met  behulp  van de
+     RST  30H  instruktie,  zodat er geen breakpunten in  de  ROM
+     geplaatst kunnen worden.
+
+
+          6. HEX
+          ------
+
+     Het H kommando  kent  twee situaties. Ten  eerste alleen  H.
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 61
+
+
+     MRBUG laat dan het laagste adres  zien, dat door  MRBUG zelf
+     gebruikt wordt. Ten tweede kunnen  er twee parameters worden
+     meegegeven. In  dat geval laat MRBUG de som, en het verschil
+     zien (in twee vormen) van deze  getallen.  Het is  een hexa-
+     decimale rekenfaciliteit.
+
+
+          7. INPUT
+          --------
+
+     Het I kommando wordt  gebruikt om een  bepaalde I/O poort te
+     lezen; er  wordt 1 parameter verwacht:  de  te  lezen poort.
+     MRBUG toont de  waarde  (hexadecimaal),  die op de opgegeven
+     poort is gelezen.
+
+
+          8. LIST
+          -------
+
+     L is een symbolisch list kommando,  welk tot twee parameters
+     accepteert.  Deze bepalen de te  listen  geheugen  range. De
+     default waarde van het  eerste  adres is de  huidige PC, van
+     het  tweede adres is  het FFFFH. De list heeft het  volgende
+     formaat:
+
+     adres: opcode bytes   ascii waarde   Z-80 mnemonics
+
+     List  is een  uitermate  handige  manier  om  programma's te
+     bekijken.  Ook bij  het  single stepping en  bij het treffen
+     van  een  breakpunt  wordt  List  gebruikt  om  de  volgende
+     instruktie  te laten zien. MRBUG kan  een  symbolische  naam
+     geven aan bepaalde adressen; zie hiervoor het 'T' kommando.
+
+
+          9. MOVE
+          -------
+
+     Move maakt het  mogelijk  stukken geheugen  te  verschuiven.
+     Drie parameters zijn vereist, te weten  het  start-adres van
+     het  te  verschuiven gebied, het eindadres  van  het te ver-
+     schuiven  gebied, en  het begin adres  van  het  bestemmings
+     gebied, daar waar de bytes naar toe moeten. Bijv:
+
+          M 6000 7FFF 9000
+
+     verschuift geheugen  6000-7FFF naar 9000-AFFF.  De beide ge-
+     bieden  mogen elkaar overlappen!  Move zoekt zelf de manier,
+     die nodig is  om  zodanig  te verschuiven dat er geen  bytes
+     verloren gaan.
+
+
+          10. OUTPUT
+          ----------
+
+     Met  behulp van  het O  kommando kan een waarde  in een  be-
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 62
+
+
+     paalde I/O  poort worden  geschreven. Er  zijn 2  parameters
+     nodig namelijk
+          a. het nummer van de I/O poort
+          b. de te schrijven waarde.
+
+
+          11. QUIT
+          --------
+
+     Met Q kan  teruggegaan worden naar DOS. Eventuele gewijzigde
+     adressen,  zoals  het  RST 30H transfer adres, en  de  HIMEM
+     lokatie  worden  teruggezet  op hun  oorspronkelijke waarde.
+     Het wordt sterk  aanbevolen MRBUG altijd met Q  te verlaten,
+     anders  blijft HIMEM te laag! Dit kan rechtgezet worden door
+     een RESET. NEWDOS/80  en LDOS kennen  speciale kommando's om
+     bv. HIMEM terug te zetten.
+
+
+          12. REGISTER
+          -----------
+
+     Het  R kommando  laat de  registers zien en  accepteert geen
+     parameters. De getoonde registers zijn:
+
+       a, bc, de, hl, psw, ix, iy, (sp), (sp-1), sp, pc
+
+     PSW  betekent  Processor  Status  Word en  geeft de  diverse
+     vlaggen van  de CPU  aan. Getoond worden de  Minus-vlag,  de
+     Zero-vlag, de Parity-vlag en de Carry-vlag. De konventie  is
+     dat  de  respektievelijke letters worden getoond als de vlag
+     opstaat, en  een  spatie  als de  vlag  afstaat. Verder zijn
+     '(sp)'  en '(sp-1)'  resp. Top Of  Stack  en Top Of Stack-1,
+     beiden van de geheugen stack
+
+
+          13. STEP
+          -------
+
+
+     Het "Step"  kommando is een van de krachtigste aspekten  van
+     MRBUG, mits men weet  wat  men  aan het doen is. Door single
+     stepping kan een  programma  volledig gevolgd worden, en kan
+     de dynamische wijziging van  de registers (en het  geheugen)
+     gevolgd  worden.  S  accepteert  maximaal 2  parameters.  De
+     eerste is een stappen teller, dat wil zeggen het  aantal uit
+     te  voeren stappen. De default waarde  hiervan is  1. Een  0
+     waarde  komt ook overeen met 1 stap; hiervoor is  gekozen om
+     te voorkomen  dat  een type fout als  's  s'  oneindig door-
+     loopt. Een  groot  getal bv.  '8000'  stapt  heel lang! Zo'n
+     lange stepping kan door de break  toets  onderbroken worden.
+     De  tweede parameter geeft de  stap  mode  aan:  er  zijn  8
+     modes;  default  mode  is  7.  De mode wordt bepaalt door  3
+     faktoren namelijk
+
+          a. toon registers na elke stap (of niet).
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 63
+
+
+          b. toon de volgende instruktie symbolisch (of niet).
+          c. Voer de Z-80 instruktie CALL helemaal
+             uit, zonder te stappen (of stap de aange-
+             roepen subroutine ook).
+
+     Deze faktoren maken de volgende kombinaties mogelijk:
+
+         MODE:           AKTIE:
+
+          0              geen a, geen b, geen c
+          1              geen a, geen b, wel c
+          2              wel a, geen b, geen c
+          3              wel a, geen b, wel c
+          4              geen a, wel b, geen c
+          5              geen a, wel b, wel c
+          6              wel a, wel b, geen c
+          7              wel a, wel b, wel c
+
+     De default mode is 7 dat wil zeggen  na elke  stap worden de
+     registers  en de volgende instruktie  getoond. Verder worden
+     CALLs  volledig uitgevoerd. Dit  laatste  is voor een gekom-
+     pileerd  TRS-80   Small-C   programma   erg   prettig;  zo'n
+     programma bevat  namelijk  CALLs  naar  een  support biblio-
+     theek,  waarin bepaalde veel voorkomende  akties worden uit-
+     gevoerd.  Het interessante is het  resultaat van die  aktie,
+     niet  hoe die  wordt uitgevoerd.  Vandaar mode 7. Wanneer de
+     volgende instruktie  een CALL is, en we willen wel zien  wat
+     er  in  de  CALL  gebeurt, moet het kommando  S  1 6 gegeven
+     worden.  Een kommado S 8000 1 laat niet  zien wat er gebeurt
+     met  de registers en dergelijke, maar kan wel via  een break
+     afgebroken  worden, waarna  de  situatie precies bekeken kan
+     worden. Single step in MRBUG  wordt bereikt via het plaatsen
+     van breakpunten, zodat steppen in de ROM niet mogelijk is.
+
+
+          14. TABEL
+          ---------
+
+     MRBUG heeft een  mogelijkheid om bepaalde waarden  te tonen,
+     in de symbolische list  (L  kommando) als symbolische namen.
+     Dit kan de leesbaarheid  van deze machine kode verhogen. Bij
+     opstart is  er  1  naam  bekend namelijk "DOSEXT",  overeen-
+     komend  met de  waarde  402DH. Er is ruimte  gereserveerd om
+     nog acht andere namen  te definieren. Het T kommando, zonder
+     parameters, toont de huidige tabel. Door het T  kommando met
+     1  parameter  te gebruiken  kan een naam aan de tabel worden
+     toegevoegd. Deze  parameter  moet de  waarde zijn, welke met
+     een naam geassocieerd moet worden.  Na  dit  kommando vraagt
+     MRBUG  de  bedoelde naam. Indien  gewenst  kunnen  standaard
+     meerdere  namen  in  de tabel  worden  gezet; hiertoe  dient
+     MRBUG op  schijf  gewijzigd te  worden  m.b.v.  CCUSTOM  (of
+     SUPERZAP).  De tabel  bevindt zich vooraan (maar na  de ini-
+     tiatie kode) en is goed herkenbaar door  het  woord "DOSEXT"
+     en  de vele nullen.  Het  tabel  formaat is eerst  de  hexa-
+     decimale  waarde (LOP, HOP), gevolgd  door 6 ascii karakters
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 64
+
+
+     voor de geassocieerde naam.
+
+
+          15. WOORD
+          ---------
+
+     Met het  W kommando kan een 16 bits woord  gezocht worden in
+     het geheugen. Er zijn 3 parameters vereist te weten:
+
+          het begin adres van het af te zoeken geheugen gebied
+          het eind adres van het af te zoeken gebied
+          het te zoeken woord.
+
+     Dit woord wordt in Z-80 formaat  gezocht, dat wil zeggen Low
+     Order  Part, High  Order Part. Over het af te zoeken gebied,
+     wordt  getoond:  het  adres van  de  byte  voor het gezochte
+     woord, die byte  en  tenslotte het woord  zelf.  Hiermee kan
+     dan direkt  de eventuele instruktie  bekeken  worden, waarin
+     het woord staat,
+
+
+          16. EXCHANGE
+          ------------
+
+     Het exchange kommando maakt het mogelijk  2 geheugen  gebie-
+     den  te  verwisselen.  Er  zijn  drie  parameters  nodig. De
+     parameters  1  en  2 geven  het  begin-  respektievelijk het
+     eindadres aan van  het ene gebied; de derde  parameter geeft
+     het beginadres van  het andere gebied. Het eindadres van dit
+     gebied wordt bepaald door de lengte van het eerste gebied.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 65
+
+
+
+     9.4: PROFILE   maak een "tijd-profiel"
+          -------
+
+
+     Met  behulp van de Mikrorie NEWDOS/80  Profiler  kan gemeten
+     worden waar een  programma  "zijn tijd doorbrengt";  er ont-
+     staat  dan  een  tijd-profiel. De Profiler bepaalt,  wanneer
+     het te meten programma draait, 50 keer per  sekonde waar  de
+     "Program  Counter" is  en, indien deze  binnen het opgegeven
+     interval ligt,  wordt een teller in een tabel opgehoogd.  Na
+     beeindiging  van  het programma kan deze tabel naar een file
+     worden  geschreven  en geprint worden. De Mikrorie Newdos/80
+     Profiler werkt alleen onder NEWDOS/80.
+
+     Gebruik:
+
+         Profile  startadres(hex) eindadres(hex) [filenaam]
+                         ->  interval  <-      -> optioneel <-
+
+     Bij elk gebruik  van Profile moet een interval worden  opge-
+     geven, waarbinnnen gemeten wordt. Dit wordt aangegeven  door
+     twee  hexadecimale adressen,  gescheiden  door  een  spatie.
+     Optioneel mag een  filenaam  worden  opgegeven.  Onder  deze
+     naam  wordt in  dat geval  de  tellers-tabel  weggeschreven.
+     Wanneer   geen  naam  wordt   opgegeven  wordt  een  default
+     filenaam gebruikt:
+
+         PROFILE/PRF
+
+     Na  het  kommando "Profile  interval  [filenaam]"  keert  de
+     profiler  terug in Dos. Het "te profileren" programma kan nu
+     gestart  worden.  Eenmaal  weer  in Dos aangekomen,  kan  de
+     Profiler beeindigd worden door:
+
+         *PFSTOP
+
+     De tellers-tabel wordt nu naar schijf weggeschreven.
+
+     De  resultaten  kunnen zichtbaar gemaakt worden door  middel
+     van het kommando
+
+         Printprf [filenaam] [>output]
+
+     De Profile tabel, welke in de file  "filenaam" is opgeslagen
+     wordt in  leesbare vorm naar de display gezonden; redirektie
+     is mogelijk. Indien geen  filenaam wordt opgegeven, wordt de
+     default PROFILE/PRF gebruikt.
+
+
+     De Profiler heeft een tellers-tabel van  256  elementen. Het
+     opgegeven interval  wordt  dan ook  in 256 stukjes verdeeld;
+     elk  stukje  wordt  afzonderlijk geteld. Elke teller kan tot
+     65535 doortellen. Dit  betekent dat de Profiler in het meest
+     extreme geval, namelijk wanneer  bij  elke meting de Program
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                9. Utilities   Pagina 66
+
+
+     Counter  zich steeds  in hetzelfde vakje  bevindt, gedurende
+     65535/50  =  1310 sekonden  (ong.  22  minuten) korrekt  kan
+     werken.
+
+     De Profiler  relokeert zichzelf naar boven aan  het beschik-
+     bare  geheugen, aangegeven door  HIMEM.  Ook  de inhoud  van
+     HIMEM wordt aangepast.
+     
+     Ruimte: 768 bytes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0                Reserve        Pagina 67
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+

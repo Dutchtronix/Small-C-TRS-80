@@ -322,6 +322,8 @@ FGETS::	POP	DE
 	OR	C
 	JR	Z,GSOUT
 	CALL	GETFCB	;FCB to DE
+	IF 0
+	; No need. GETB() and GETBYT() are identical in this version.
 	LD	HL,GETB
 	LD	(SGOON1+1),HL
 	LD	HL,51FFH
@@ -329,6 +331,7 @@ FGETS::	POP	DE
 	JR	NC,FG010	;brif FCB <5200H
 	LD	HL,GETBYT
 	LD	(SGOON1+1),HL
+	ENDIF
 FG010:	POP	HL
 	PUSH	HL
 	LD	A,(IX+SLFLAG)

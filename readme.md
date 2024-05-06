@@ -8,8 +8,6 @@ Editor used: Scripsit V1.0 (patched for Newdos/80)
 <br>
 Other tools: Microsoft M80 and L80 for TRSDOS
 
-Note:
-	CCC50 run-time support added requires an updated cclib/rel.
  
 Compiler source Files:
 <br>
@@ -17,35 +15,15 @@ cc/def	(remove #define MSC when compiling on a TRS-80)
 <br>
 ccint/h
 <br>
-cc0/c
+cc0/c, cc01/c
 <br>
-cc01/c
+cc1/c, cc11/c, cc12/c
 <br>
-cc1/c
+cc2/c, cc21/c, cc22/c
 <br>
-cc11/c
+cc3/c, cc31/c, cc32/c, cc33/c
 <br>
-cc12/c
-<br>
-cc2/c
-<br>
-cc21/c
-<br>
-cc22/c
-<br>
-cc3/c
-<br>
-cc31/c
-<br>
-cc32/c
-<br>
-cc33/c
-<br>
-cc4/c
-<br>
-cc41/c
-<br>
-cc42/c
+cc4/c, cc41/c, cc42/c
 <br>
 
 When compiling on a TRS-80
@@ -229,7 +207,7 @@ peepholes are currently disabled until this issue is resolved.
 Using malloc() is very expensive in terms of code size. Almost all malloc() in the compiler are one time allocations, never freed. There is a calloc() in the code generator which frees the allocated buffer almost instantly. The issue is fopen() used for up to 3 input files, 1 output file and 1 error messages file plus potential
 command line redirection files. The library function malloc() has been replaced with a local, simplified, version to save code space.
 
-The code area before main(), string "ENDINIT" is used as the stagebuffer in the TRS-80 hosted compiler (STAGESIZE bytes, currently 1835 bytes). This stagebuffer is used to buffer intermediate code for each function, which is then used for peephole optimizations and code generation for each function. This limits the size of each function allowed.
+The code area before main(), string "ENDINIT" is used as the stagebuffer in the TRS-80 hosted compiler (STAGESIZE bytes, currently 1994 bytes). This stagebuffer is used to buffer intermediate code for each function, which is then used for peephole optimizations and code generation for each function. This limits the size of each function allowed.
 
 IOLIBCC.MAC is a customized file I/O library. It removes unused code.
 
@@ -255,28 +233,38 @@ TRS-80 keyboard limitations:
 
 Tools:
 The bin folders contains binaries that will run on a TRS-80 Model I running Newdos/80 V2.0.
+<br>
 List of files:
+<br>
 cc/cmd			Small-C compiler V2.1B. Converts Small-C source code to assembly files
 				in M80 format.
+<br>
 m80/cmd			Microsoft's assembler for the TRS-80. Converts .mac files to .rel files
+<br>
 l80/cmd			Microsoft's linker for the TRS-80. Collects one or more .rel files and
 				combines it with the C library file CCLIB/REL into a executable for
 				the TRS-80 (/cmd extension)
+<br>
 sc/cmd			Scripsit for the TRS-80. Full screen editor. Clumsy user interface but still
 				better than the various line editors available. Use the ESC key on an emulated
 				TRS-80 to issue commands like L file, S,A file (save as Ascii). Exit by typing
-				END after the ESC key.
-				Documentation in the docs folder.
+				END after the ESC key. Documentation is in the docs folder.
+<br>
 dumpcmd/cmd		Dumps the sections of a cmd file
+<br>
 compbin/cmd		Compare 2 binary files for equality
+<br>
 comptxt/cmd		Compare 2 text files (naively)
+<br>
 makelib/cmd		Create library cclib/rel.
 
 
 General observations:
+<br>
 Amazingly difficult to work on a TRS-80 (emulated) when used to conveniences of Windows.
-Specially text editing very cumbersome. I've been using Scripsit since didn't want to deal
+Specially text editing is very cumbersome. I've been using Scripsit since I didn't want to deal
 with the linenumbers based editors. Emulator keyboard made this even more difficult.
+<br>
 Debugging another nightmare. Memory limitations next problem. Initially unable to use Newdos/80 V2.5
 since that Newdos version reserves part of the High Memory (himem is F8FF under Newdos/80 v2.5), which doesn't leave enough memory
 for the self-compilation process. The compiler memory requirements have been reduced so self-compilation now works with Himem=F800H.

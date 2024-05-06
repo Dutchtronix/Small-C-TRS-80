@@ -1,0 +1,288 @@
+
+
+     TRS-80 Small-C V2.0          5. Implementatie     Pagina 27
+     
+     
+
+     
+     5. Implementatie en Machine Afhankelijkheden
+        -----------------------------------------
+     
+     
+     Het referentie boek voor  de taal C is  'The  C  Programming
+     Language' door  Brian  W.  Kernighan  en  Dennis  M. Ritchie
+     (Prentice  Hall 1978). Bij het bestuderen van dit boek  moet
+     bedacht worden  dat sommige taal faciliteiten in Small-C 2.0
+     niet  beschikbaar  zijn.  De ontbrekende faciliteiten en  de
+     afwijkingen worden  in paragraaf 5.1 genoemd; hierbij is het
+     wel van belang te  vermelden, dat  Small-C een subset is van
+     C: een Small-C programma, geprogrammeerd volgens  de  regels
+     van deze  handleiding,  kan in principe  zonder  wijzigingen
+     aangeboden  worden aan een volledige  C kompiler. Dit  geldt
+     natuurlijk  niet wanneer machine  afhankelijkheden (bv.  in-
+     teger en pointer zijn  gelijk in lengte) en faciliteiten als
+     in-line assembler (#asm -- #endasm) worden gebruikt.
+     
+     
+     5.1: Niet Beschikbare Faciliteiten in Small-C 2.0
+          --------------------------------------------
+     
+     
+     De volgende keyworden worden NIET herkend:
+     
+       float, double, struct, union, long, short, unsigned,
+       auto, register, typedef, static, sizeof, entry
+     
+     Long en float konstanten, alsmede rekenen met deze typen
+     
+     Structures en unions
+     
+     Statische lokale variabelen
+     
+     Het typedef mechanisme
+     
+     #line preprocessor funktie
+     
+     De konditionele operator a ? b : c
+     
+     De 'cast' operatie
+     
+     
+     
+     
+     5.2: Beperkingen van faciltiteiten in Small-C 2.0
+          --------------------------------------------
+     
+     
+     #define:
+          de    vervangings    string   wordt   niet    rekursief
+          geevalueerd.  Parameters   voor   #define   zijn   niet
+          toegestaan.
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          5. Implementatie     Pagina 28
+     
+     
+          
+     
+     
+     deklaraties:
+          variabele  deklaraties   kunnen  slechts  bestaan   uit
+          int/char,  een-dimensionale  arrays  van   int/char  of
+          pointers  naar  int/char.  Op twee  uitzonderingen  na,
+          betekent  dit,  dat  slecht  1  modifier  gebruikt  mag
+          worden op een C variabele. De uitzonderingen zijn:
+          
+          
+          A.  de globale deklaratie
+          
+              char *var[n] = { "string1",
+                                ......
+                               "stringn"};
+          
+              genereert een array van pointers naar character.
+          
+          
+          B.  een funktie parameter mag gedeklareerd worden als
+          
+              char *argv[];
+          
+              Dit deklareert een pointer naar een array van
+              strings
+          
+     
+     Initiatie van variabelen  is  alleen voor  globals mogelijk;
+     er mogen geen externals in de initiatie waarde voorkomen.
+     
+     Ten onrechte mogen variabelen een naam  krijgen,  gelijk aan
+     een keyword.
+     
+     
+     5.3: Implementatie en machine afhankelijkheden
+          -----------------------------------------
+     
+     
+     Variabele van  type 'char' zijn 8 bits breed. Bij elke aktie
+     worden  deze  verbreed tot  16  bits,  waarbij het teken-bit
+     wordt uitgepakt (sign-extend).
+     
+     Alleen  de eerste  vijf/zes  posities van  namen van globale
+     variabelen en  funkties zijn zinvol (bepaald door de diverse
+     assemblers).
+     
+     De  kompiler  maakt geen onderscheid tussen  grote en kleine
+     letters in de C tekst, behalve  in  strings en karakter kon-
+     stanten.
+     
+     De operator ">>=" genereert  altijd een signed  shift right;
+     ">>" maakt wel onderscheid tussen signed en unsigned.
+     
+     Wanneer in een initiatie expressie een niet-konstante  wordt
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          5. Implementatie     Pagina 29
+     
+     
+     gebruikt, komt de kompiler in een loop!!
+     
+     Een  van de  eigenschappen van  C  is, dat funkties met  een
+     variabel aantal parameters  mag  worden aangeroepen.  Imple-
+     mentatie  hiervan is niet eenvoudig en vereist het  in omge-
+     keerde volgorde op stack  zetten van de parameters. Mikrorie
+     Software  heeft deze eigenschap korrekt geimplementeerd. Dit
+     betekent dat de  interface  van C  funkties  naar  assembler
+     routines als volgt is:
+     
+     
+          Parameters  worden op de stack  gepushed. Bij  aankomst
+          in een  routine ligt op afstand 0 van de Stack  Pointer
+          het  terugkeer adres naar het  C programma.  Op afstand
+          2(SP) beginnen  de parameters,  waarbij  de  lijst  van
+          parameters  zoals in C de aanroep  is verricht, zich op
+          een oplopende offset bevindt:
+          
+            function (p1, p2, p3, p4) int p1,p2,p3,p4;
+          
+            0(SP)  : terugkeer adres
+            2(SP)  : P1
+            4(SP)  : P2
+            6(SP)  : P3
+            8(SP)  : P4
+          
+          In  principe hoeven geen  registers gered te worden. De
+          funktie-waarde dient in HL te worden achter gelaten.
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          Reserve              Pagina 30
+
+
+
+          
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+

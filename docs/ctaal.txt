@@ -1,0 +1,720 @@
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 18
+
+
+
+
+     4. Small-C 2.0 Taal Samenvatting
+        -----------------------------
+
+
+     Deze paragraaf bevat een  taal samenvatting in de  vorm  van
+     een  aantal tabellen,  gevolgd  door een  toelichting op  de
+     vermelde  taal faciliteiten. Deze paragraaf is bedoeld om de
+     voornaamste eigenschappen  van Small-C over  te brengen  aan
+     de  wat  meer  ervaren  programmeur.  Voor  een  uitputtende
+     behandeling van de  taal C  wordt verwezen naar  het  boek :
+     "The C  programming  Language"  door Brian W.  Kernighan  en
+     Dennis M. Ritchie (Prentice Hall 1978).
+
+     4.1: Syntax
+          ------
+
+     1. Data Typen:
+        -----------
+
+       Typen:
+               char, int
+       Deklaraties:
+       a.      char c, *pc, ac[], ac2[n], *arr[]
+       b.      int i, *pi, a1[], aci[n]
+       c.      extern char/int ...
+
+       Initializatie:
+       a.              char/int v = constant;
+       b.              char/int a[] = {c, c, ..};
+       c.              char *s = "...";
+
+
+     2. Basis Elementen:
+        ----------------
+
+       a.  konstanten:
+               decimaal getal
+               oktaal getal, beginnend met '0'
+               hexadecimaal getal, beginnend met '0X'
+               karakter konstante 'c'
+               string konstante "abc"
+       b.  variabele
+       c.  adres[expressie]
+       d.  funktie(arg1,...,argn)     n >= 0
+
+
+     3. Expressies:
+        -----------
+
+       Eenwaardige Operatoren:
+       a.      -       min
+       b.      *       inhoud van
+       c.      &       adres van
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 19
+
+
+       d.      ++      ophogen (voor of na)
+       e.      --      aflagen (voor of na)
+       f.      !       logische niet
+       g.      ~       binaire niet
+
+       Tweewaardige Operatoren:
+       h.      *  /    maal,  gedeeld door
+       i.      %       modulo
+       j.      +       plus
+       k.      -       min
+       l.      >> <<   schuif rechts,  schuif links
+       m.      <  <=   kleiner dan,  kleiner dan of gelijk aan
+       n.      >  >=   groter dan,  groter dan of gelijk aan
+       o.      == !=   is gelijk,  is niet gelijk
+       p.      & | ^   binaire AND, OR, XOR
+       q.      &&  ||  logische AND, OR
+       r.      =       toekenning
+       s.      +=  -=  rekenkundige toekenningen
+       t.      *=  /=
+       u.      &=  |=
+       v.      ^=
+       w.      >>= <<=
+       x.      ,       lijst van expressies
+
+
+     4. Statement:
+        ----------
+
+       a.      expressie;
+       b.      if (expressie) statement;
+       c.      if (expressie) statement; else statement;
+       d.      for (expressie; expressie; expressie) statement;
+       e.      while (expressie) statement;
+       f.      do statement while (expressie);
+       g.      switch (expressie) {
+       h.              case: statement;
+                       case: statement;
+                       :
+                       :
+       i.              default: statement; }
+       j.      break;
+       k.      continue;
+       l.      return;
+       m.      return expressie;
+       n.      goto label;
+       o.      label: statement;
+       p.      { char/int vari, *varj, vark[n];
+                 statement; .... statement; }
+       q.      ;       (leeg statement)
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 20
+
+
+     5. Funktie Definitie:
+        ------------------
+
+       a.  fname(arg1,....,argn)
+               int/char argi, *argj, argk[], *argm[] ... ;
+               statement
+
+
+
+
+     6. Preprocessor Definities:
+        ------------------------
+
+       a.  /* kommentaar */       wordt verwijderd
+       b.  #define naam string    naam wordt hierna
+                                   vervangen  door string
+       c.  #include "filenaam"    inhoud van file "filenaam"
+           #include <filenaam>     wordt tussengevoegd
+       d.  #ifdef naam            tekst wordt doorgegeven als
+           #ifndef naam            naam wel/niet gedefinieerd
+       e.  #else                  inverteer huidige konditie
+       f.  #endif                 einde van konditie
+       g.  #asm                   volgende tekst gaat
+       h.  #endasm                  naar output
+
+
+
+
+     4.2: Variabelen
+          ----------
+
+
+     Namen van Small-C variabelen  bestaan uit  letters,  cijfers
+     en het  karakter '_'. Het  eerste  karakter moet een  letter
+     zijn. Grote en kleine  letters zijn toegestaan; ze worden in
+     deze implementatie NIET van  elkaar onderscheiden. Variabele
+     namen  mogen  onbeperkt  lang  zijn;  slechts  de  eerste  8
+     posities  zijn  signifikant.  Voor  globale   variabelen  en
+     funktie namen kunnen  maar 6 posities signifikant  zijn; bij
+     gebruik van Instant Assembler slechts 5 posities.
+
+     Elke variabele heeft een type, bereik en klasse.
+
+     Het bereik  van een variabele bepaalt  in  welk  deel van de
+     programma  tekst de variabele  bekend is. De drie  mogelijke
+     bereiken  zijn: lokaal, globaal en extern. Lokale variabelen
+     worden  gedeklareerd aan  het  begin  van  een  samengesteld
+     statement  (zie  paragraaf  4.1  punt  4.p); ze  zijn alleen
+     binnen dat samengestelde  statement  bekend en dezelfde naam
+     kan   in  andere   statements   gebruikt   worden.   Globale
+     variabelen zijn  die  variabelen,  welke buiten een  funktie
+     deklaratie   worden  gedeklareerd.   Ze   zijn   vanaf   het
+     deklaratie punt tot en met het  einde van de programma tekst
+     bekend  in  alle   funkties.  Met   behulp  van  de   EXTERN
+     deklaratie  kunnen   variabelen   en  funkties   buiten   de
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 21
+
+
+     kompilatie  eenheid  gerefereerd worden, bijvoorbeeld in  de
+     Standaard I/O bibliotheek  of in eigen,  apart gekompileerde
+     Small-C programma's.
+
+
+     Data Typen
+
+     Small-C 2.0 kent twee basis data typen:
+
+     'int', een 16-bits positief of negatief getal (tussen
+            -32768 en +32767)
+     'char',een 8-bits positief of negatief getal (tussen
+            -128 en +127). Variabelen van het type 'char' worden
+            vaak gebruikt om tekst karakters in op te slaan.
+
+     De   meer  komplexe  data  typen,  array  en  pointer,  zijn
+     opgebouwd  m.b.v.  de  basis   typen  'int'  en  'char'.  De
+     volgende C programma regel  deklareert een  'int', een array
+     van 'int', een pointer naar 'int':
+
+       int  i, array[30], *ptr;
+
+     Een array is een  aaneengesloten reeks elementen, elk  groot
+     genoeg om een 'char' of een 'int' te bevatten.  C  kent geen
+     apart string-type. Een  array van char wordt gebruikt om een
+     string in  op te slaan. Zo'n  array  wordt  gevolgd door een
+     binaire nul (0), die het einde van de string aangeeft.
+
+
+     Pointers
+     --------
+
+     Pointers  zijn  essentieel  voor de taal  C.  Een pointer is
+     feitelijk  een  adres. In  deze implementatie zijn  pointers
+     dan ook 16 bits getallen, zonder teken (tussen  0 en 65535).
+     Pointers  in  C  worden  o.a.  gebruikt  om efficient  langs
+     arrays te lopen  (in plaats van  index variabelen) en om het
+     adres van  (grote) data  eenheden als  funktie argument door
+     te geven.
+
+
+     Opslag klasse
+     -------------
+
+     De  opslag klasse van  een variabele bepaalt hoe deze in het
+     komputer  geheugen  wordt  opgeslagen. Small-C  2.0  kent de
+     volgende opslag klassen:
+
+               statisch
+               automatisch
+               extern
+
+     Statische  variabelen  zijn  eenvoudig  geheugen   plaatsen.
+     Automatische  variabelen  worden  geallokeerd  op de machine
+     stack. Statische variabelen bewaren  gedurende  de  exekutie
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 22
+
+
+     van  een  programma  hun  waarden;  automatische  variabelen
+     verliezen hun waarde, zodra het programma buiten  het bereik
+     van die  variabele komt. Wanneer  een samengesteld statement
+     rekursief   wordt   aangeroepen  (door  een  nieuwe  funktie
+     aanroep),  worden nieuwe automatische  variabelen gekreeerd.
+     Lokale  variabelen zijn altijd  automatisch, terwijl globale
+     variabelen  altijd  statisch zijn.  Externe variabelen  zijn
+     statisch,  maar  gedeklareerd  in   een   andere  kompilatie
+     eenheid.
+
+
+     Konstanten
+     ----------
+
+     Een decimale  konstante  bestaat  uit  een  string  decimale
+     cijfers.  Een  konstante,  die  begint met  het  cijfer '0',
+     wordt  geinterpreteerd als een  oktaal  getal. Een konstante
+     beginnende met '0X' of ('0x') wordt geinterpreteerd  als een
+     hexadecimaal getal.
+
+     Small-C 2.0  berekent konstante expressies op het moment van
+     kompilatie.  Dit  betekent  dat   overal  waar  een  integer
+     konstante is vereist (bijvoorbeeld de dimensie in een  array
+     deklaratie),  een  expressie met  alleen konstanten gebruikt
+     mag worden.
+
+     Small-C  2.0  kent  ook   strings  en  karakter  konstanten.
+     Karakters kunnen bestaan uit zichtbare tekens of
+
+               \t      voor tabs (9)
+               \n      voor einde regel (13)
+               \b      voor backspace (8)
+               \f      voor formfeed (12)
+               \\      voor \
+               \'      voor '
+               \"      voor "
+               \123    voor de oktale waarde 123
+                         (of enige andere waarde)
+
+     Het  getal  tussen haakjes geeft  de numerieke  waarde  aan,
+     overeenkomstig de ASCII tekens set.
+     Het \  teken  in bovenstaande tabel  kan  door het  @  teken
+     vervangen worden (zie ook Hoofdstuk 3 ).
+     Een  karakter  konstant  wordt  geschreven  als  'c' (enkele
+     quotes).  Een  string wordt  geschreven als "cccc"  (dubbele
+     quotes).  De  string wordt automatisch door een  binaire nul
+     afgesloten
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 23
+
+
+     4.3: Operatoren en expressies
+          ------------------------
+
+
+     De operatoren in  Small-C 2.0  zijn getoond  in de tabel van
+     paragraaf 4.1,  punt 3. De volgorde in de tabel komt overeen
+     met de  prioriteit  in  de  expressie evaluatie.  Een deling
+     ('/')  heeft bv.  een hogere  prioriteit  dan  een optelling
+     ('+').
+
+     Sommige  operatoren  zijn  specifiek  voor  de  taal  C.  De
+     eenwaardige  operator '*' heeft een  pointer  als operand en
+     levert  als  resultaat  de  inhoud van  de  plaats  waar  de
+     pointer naar  wijst op. De operator '&' heeft een objekt als
+     operand.  Dit objekt moet een adres hebben; het resultaat is
+     een pointer  naar  dat  adres.  Dit betekent dat  voor  elke
+     expressie  A,  welke  een  adres  heeft, de waarde  van  *&A
+     gelijk is aan A!
+
+     De operatoren '++'  en '--' kunnen zowel voor als achter een
+     variabele  voorkomen.  Het effekt is dat  de variabele met 1
+     wordt  verhoogd  (++)  cq.  met 1  wordt  verlaagd (--).  De
+     waarde van de expressie  is de variabele  voor de aktie, als
+     de  operator achter de variabele staat. Als de operator voor
+     de variabele staat, is  de  waarde  van  de expressie gelijk
+     aan de variabele na de aktie. Bijvoorbeeld
+
+      i = 10; j = i++;            waarde van j wordt 10
+      i = 10; j = ++i;            waarde van j wordt 11
+
+     Als  p  een  pointer  is naar een  karakter:  'char *p', dan
+     heeft de expressie *p++ de waarde  van  het  karakter waar p
+     naar  wijst  VOOR  ophogen.  Deze  eigenschap leidt  tot  de
+     volgende soort programma tekst, die veel in C voorkomt:
+
+       p = "een of andere string";
+       while (*p) putchar (*p++);
+
+     Deze regels sturen  de string naar het output  device,  door
+     voor  elk  karakter putchar() aan te  roepen,  totdat  p  de
+     binaire nul tegenkomt, die de string beeindigt.
+
+     Het  is  belangrijk te vermelden  dat,  wanneer een  pointer
+     wordt  verhoogd/verlaagd, de waarde niet met  1, maar  met 1
+     OBJEKT wijzigt. Een pointer  naar 'int' bijvoorbeeld,  wordt
+     opgehoogd, zodat hij naar  de volgende  'int' wijst, in  dit
+     geval 2 bytes verder (een pointer heeft een byte adres).
+
+     Boolean waarden  in C  zijn nul (onwaar) of niet-nul (waar).
+     Boolean operatoren in C  (==, >, && etc) geven als resultaat
+     een nul(0) of een een(1).
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 24
+
+
+
+     4.4: Statements
+          ----------
+
+
+     De tabel van paragraaf 4.1  punt 4 toont de statements in C.
+     Overal  waar  een  enkelvoudig statement is toegestaan,  mag
+     ook een samengesteld  statement voorkomen. Lokale variabelen
+     moeten   vooraan    het   samengestelde   statement   worden
+     gedeklareerd:
+
+       {
+         char/int var1, ... ;
+         statement;
+         .......
+         statement;
+       }
+
+     De  herhalings  statements  in  C hebben allemaal eenvoudige
+     equivalente definities:
+
+     - for (e1; e2; e3) statement;
+
+       betekent:       e1; L: if (er) {
+                           statement; e3; goto L;
+                       }
+
+
+     - while (e) statement;
+
+       betekent:       L: if (e) {
+                          statement; goto L;
+                       }
+
+
+     - do statement; while (e);
+
+       betekent:       L: statement; if (e) goto L;
+
+
+     - switch (e)  { case c1: s1; ... case cn: sn; default: s; }
+
+       betekent:       value = e;
+                       if (value == c1) s1;
+                       :
+                       :
+                       if (value == cn) sn;
+                       s;
+
+
+     Het 'break' statement springt uit de  binnenste 'for', 'do',
+     'while' of 'switch'.
+     Het  'continue'  statement  springt naar  het  kontrolerende
+     deel van de binnenste 'for', 'do' of 'while'.
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 25
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        4. Taal Samenvatting   Pagina 26
+
+
+     4.5: Voorbeelden en Waarschuwingen
+          -----------------------------
+
+
+     Deze  korte samenvatting bevat verre van alle details, welke
+     in  de taal C te  vinden  zijn. Het boek 'The C  Programming
+     Language'  kan  bestudeerd worden om alle  details te leren.
+     Ook de voorbeeld programma's die  meegeleverd  worden bij de
+     TRS-80 Small-C V2 kompiler zijn  een goed uitgangspunt om de
+     taal C onder de knie te krijgen.
+
+
+     Veel voorkomende fouten in C:
+     -----------------------------
+
+     - gebruik == om te testen of twee expressies gelijk
+       zijn. Het = teken maakt de variabele aangeduid door
+       de linker expressie gelijk aan de rechter expressie.
+
+     - maak onderscheid bij het 'extern' deklareren van
+       variabelen tussen pointers en array:
+       een extern deklaratie 'int var[]' heeft een andere
+       betekenis dan 'int *var'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0        Reserve                Pagina 27
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+

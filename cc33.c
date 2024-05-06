@@ -211,7 +211,20 @@ void stowlit(value, size) int value, size;
 		newerror(44);
 		exit(ERRCODE);
     }
+#ifdef MSC
+	ASSERT(size <= BPW);
+#endif
+#ifdef BUGFIXES
+	if (1 == size) {
+		litq[litidx] = value;
+	}
+	else {
+		iptr = litq + litidx;
+		*iptr = value;
+	}
+#else
 	putint(value, litq+litidx, size);
+#endif
 	litidx=litidx+size;
 }
 

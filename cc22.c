@@ -42,7 +42,7 @@ msearch(sname) char *sname;
 	return FALSE;
 }
 /*
-** TODO add #asm version
+** 
 */
 hash(sname) char *sname; {
 	int i, c;
@@ -72,11 +72,7 @@ void clearstage(before, start) char *before, *start;
 char hexmap[16] =  {'0', '1', '2', '3', '4', '5', '6', '7',
 					'8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-#ifdef MSC
 #define LOWNIBBLE 0x0F
-#else
-#define LOWNIBBLE 15
-#endif
 
 void outBhex(number) int number;
 {
@@ -141,7 +137,6 @@ ot(ptr) char ptr[];
 ** send string to output
 ** must work with symbol table names
 ** terminated by length byte
-** TODO add #asm version
 */
 void outstr(ptr) char ptr[];
 {
@@ -150,7 +145,6 @@ void outstr(ptr) char ptr[];
 
 /*
 ** send byte to output
-** TODO add #asm version
 */
 void outbyte(c) char c;
 {
@@ -209,7 +203,7 @@ void newerror(errvalue, text) int errvalue; char *text;
 	++errcount;
 	k = line+4;
 	while (k++ < lptr) cout(' ', stdout);
-	lout("^", stdout);
+	lout("[", stdout);
 	sout("**** ", stdout);
 	/* print expected token first */
 	if (errvalue == 47) fputs(text, stdout);
@@ -259,7 +253,6 @@ void printerror(errnum) int errnum;
 
 /*
 ** some string compare functions for small-C V2
-** TODO add #asm version
 */
 streq(str1,str2)  char str1[],str2[];
 {
@@ -312,7 +305,6 @@ strfout:
 ** astreq
 ** must detect end of symbol table names terminated by
 ** symbol length in binary
-** TODO add #asm version
 */
 astreq(str1,str2,len)  char str1[],str2[];int len;
 {

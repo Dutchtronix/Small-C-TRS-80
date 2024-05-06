@@ -1,0 +1,433 @@
+
+
+
+     TRS-80 Small-C V2.0          7. Bibliotheken      Pagina 41
+     
+     
+
+     
+     7. Bibliotheken in TRS-80 Small-C V2.0
+        -----------------------------------
+     
+     
+     
+     7.1: Algemeen
+          --------
+     
+     
+     Wanneer een C programma  gekompileerd is, zijn er  een  aan-
+     tal routines nodig om  de resulterende  assembler output tot
+     een  uitvoerbaar  programma  om te  vormen. De  minimum  set
+     routines  bevindt  zich   in  het   module   CCRUN.  Wanneer
+     input-output  gedaan  wordt,  waaronder  ook  de  redirektie
+     valt,  zijn  de routines  in  de modulen  IOLIB,  MALLOC  en
+     CCMAIN nodig. Formatted I/O  is ondergebracht in het  module
+     PRINTF. Tenslotte zijn  er de modulen VARIOUS en  CTYPE voor
+     diverse  funkties en ASCII-test  funkties.  De laatste  drie
+     modulen  zijn C programma's, waarvan  de C  source op schijf
+     is meegeleverd.
+     Teneinde  dit  geheel wat overzichtelijker  te  maken,  zijn
+     deze modulen  gekombineerd in  een  bibliotheek: CCLIB. Voor
+     Edtasm  is  een  bijzondere  aanpak  gevolgd,  waarbij  deze
+     bibliotheek als "run-time" module wordt geladen.  Voor  elke
+     assembler wordt hierna de precieze werkwijze beschreven.
+     Eerst  is  echter een toelichting  op  een "normaal" C  pro-
+     gramma  nodig.  Het startadres  van een normaal  C programma
+     bevindt zich in het  module CCMAIN.  De taken van dit module
+     zijn:
+     
+     
+        a) Laadt het "run-time" module (CCLIB/V20) in het
+           geheugen (alleen Edtasm)
+        b) Bepaal het eerste vrije geheugen adres (alleen
+           bij Instant Assembler en Edtasm).
+        c) Analyseer kommando regel en voer redirektie uit.
+           (CALL GETCMD)
+        d) Roep de C funktie "main" (CALL MAIN). Dit is volgens
+           konventie het hoofdprogramma van een C programma.
+        e) Sluit alle openstaande files (CALL EXIT)
+     
+     
+     De taken  c) en  e)  hebben  met  File I/O (Module IOLIB) te
+     maken; taak b)  met memory  management (Module  MALLOC). Dit
+     betekent  dat  een  normaal C programma  altijd  de  modulen
+     CCRUN,  CCMAIN, IOLIB en  MALLOC  uit  de bibliotheek  CCLIB
+     nodig  heeft. Alleen door  een ander CCMAIN module te maken,
+     die de taken c) en e) niet  uitvoert  voor IOLIB  en b) voor
+     MALLOC, kan het meenemen van deze modulen vermeden worden.
+     De file STDIO/H  bevat deklaraties voor de  routines uit  de
+     standaard  I/O bibliotheek, zoals  beschreven  in het hoofd-
+     stuk STDIO. De meeste van deze routines  zijn gegroepeerd in
+     de  modulen  IOLIB  en   MALLOC.  De  routines  "printf"  en
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          7. Bibliotheken      Pagina 42
+     
+     
+     "calloc" bevinden zich in het module  PRINTF. Dit laatste is
+     een  vrij omvangrijk module;  indien "printf"  cq.  "calloc"
+     niet  gebruikt wordt, kan het meenemen van dit module  voor-
+     komen  worden. Zie de volgende  paragrafen voor  de details,
+     welke per assembler verschillen.
+     
+     
+     
+
+     7.2: Bibliotheken en Macro80 en Link80
+          ---------------------------------
+     
+     
+     De bibliotheek problematiek kan  met  behulp  van Macro80 en
+     Link80  verreweg  het  soepelst worden opgelost.  De biblio-
+     theek  CCLIB/REL  bevat  alle modulen,  zoals beschreven  in
+     paragraaf 7.1.  Link80  doorzoekt  automatisch deze  biblio-
+     theek en selekteert  alleen  die  modulen uit CCLIB/REL, die
+     feitelijk  gevraagd  worden. Onder  "normale" omstandigheden
+     zijn dit de volgende modulen:
+     
+          CCMAIN, CCRUN, IOLIB, MALLOC
+     
+     Door het vermelden van: "#include  <stdio/h>" wordt  ook het
+     module  PRINTF geselekteerd.  De modulen  VARIOUS  en  CTYPE
+     kunnen  gebruikt worden  door  het  "includen" van VARIOUS/H
+     resp. CTYPE/H.
+     Het  automatisch  doorzoeken  van  de  bibliotheek CCLIB/REL
+     wordt geforceerd doordat de kompiler het statement
+     
+          .REQUEST CCLIB
+     
+     genereert. Een exekuteerbaar programma wordt gelinkt door:
+     
+          L80 input1[,...inputn],output-n-e
+     
+     Hierbij  zijn  de  files "input1..inputn"  door Macro80  ge-
+     maakte /REL  files; meestal zullen dit gekompileerde C  pro-
+     gramma's  zijn,  maar  ook assembler files, of zelfs  gekom-
+     pileerde FORTRAN  of  BASIC files zijn mogelijk.  Het resul-
+     taat  van deze  linkslag  wordt  de  file  "output/CMD".  De
+     bibliotheek  CCLIB/REL  hoeft niet gespecificeerd te worden.
+     Wanneer  CCLIB/REL  wel  wordt  gespecificeerd,  worden alle
+     modulen geladen!  Indien er nog "Undefined References" zijn,
+     zal  Link80  de bibliotheek  FORLIB/REL  zoeken.  Een  dummy
+     bibliotheek met deze  naam is  beschikbaar op de distributie
+     schijven. In principe is  het  een fout indien er "Undefined
+     References" zijn.
+     
+     
+     Het is mogelijk  een minimaal C  programma te maken, dat wil
+     zeggen een programma, dat  alleen het module CCRUN gebruikt.
+     In zo'n geval mogen  er geen CCLIB  external symbolen in  de
+     gegenereerde /MAC file  voorkomen. Bovendien  moet een eigen
+     module CCMAIN  gebruikt  worden, dat niet de routines GETCMD
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          7. Bibliotheken      Pagina 43
+     
+     
+     en  EXIT  aanroept. Zo'n module kan gemaakt worden  door  de
+     gedistribueerde  file  CCMAIN/MAC  te  editten;  ook de  EXT
+     directives moeten  verwijderd worden! Na kompilatie  moet de
+     file CCMAIN/REL gespecificeerd worden  voor LINK80.  Het  in
+     CCLIB/REL aanwezige  module  CCMAIN wordt dan niet  meer ge-
+     bruikt.
+     
+     
+     De sources van CCLIB/REL zijn alle meegeleverd:
+
+          Module:           Source:
+          CCMAIN            CCMAIN/MAC
+          CCRUN             CCRUN/MAC
+          IOLIB             IOLIB/MAC
+          MALLOC            MALLOC/MAC
+          PRINTF            PRINTF/C
+          VARIOUS           VARIOUS/C
+          CTYPE             CTYPE/C
+
+     Het maken van een  nieuwe  CCLIB/REL is,  door het ontbreken
+     van een "library manager" niet eenvoudig.
+
+
+     7.3: Bibliotheken en Instant Assembler
+          ---------------------------------
+
+
+     Instant Assembler is  een pakket, dat  het mogelijk maakt op
+     eenvoudige maar tevens flexibele  wijze  een of meer  gekom-
+     pileerde C  files, samen  met  de benodigde  bibliotheek, te
+     vormen tot  een uitvoerbaar  programma. Het  werkt  redelijk
+     snel  maar  vraagt nogal wat tikwerk: veel kommando's moeten
+     worden gegeven  en  vele vragen  moeten  worden  beantwoord.
+     Daarom, maar ook wegens  de  grotere flexibiliteit en betere
+     automatisering,  verdient   het  Macro80/Link80  systeem  de
+     voorkeur bij gebruik van TRS-80  Small-C V2.0. Alleen indien
+     er  erg  weinig  schijfruimte  beschikbaar  is, kan  Instant
+     Assembler de voorkeur verdienen.
+
+
+     De Instant Assembler link techniek  eist,  dat symbolen, die
+     buiten een  ander  module gedefinieerd  of gebruikt  worden,
+     met het teken '&' beginnen. De  TRS-80 Small-C V2.0 kompiler
+     genereert,  indien  IAS output  wordt  gevraagd,  voor  alle
+     globale  data  en  funkties een symbool, beginnend  met  een
+     '&', gevolgd door de eerste  vijf  tekens van het symbool in
+     het C  programma.  Dit  impliceert dat  feitelijk maar  vijf
+     posities  van  een globale  symbool naam  signifikant  zijn;
+     hieronder   vallen   ook  funkties.  De  belangrijke  output
+     funktie  "printf"  wordt,  bij  gebruik  van  IAS,  voor  de
+     assembler het  symbool  &PRINT.  De  naam  "print" mag  niet
+     gebruikt worden, omdat deze hetzelfde symbool oplevert!
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          7. Bibliotheken      Pagina 44
+     
+     
+     De  werkwijze bij  gebruik  van Instant  Assembler, afgekort
+     tot  IAS, is als volgt: het C  programma  moet  gekompileerd
+     worden met de  "-i"  switch  (of  de  kompiler  moet  m.b.v.
+     CCUSTOM aangepast zijn  voor  IAS). De assembler  output van
+     de kompiler is aangepast aan  IAS, maar  nog in Edtasm  for-
+     maat. De output kan door IAS gelezen worden m.b.v. het  "IE"
+     kommando. Wanneer de  assembler source  door IAS gelezen is,
+     zijn er twee opties:
+     
+     Optie 1: Merge andere IAS modulen, waaronder de bibliotheek
+              CCLIB/IAS   m.b.v.    het   "MS"   kommando.   Deze
+              "gemergde"  modulen moeten op  schijf  staan in het
+              IAS  formaat  (zie  optie  2). Het nadeel van  deze
+              methode is,  dat  de komplete  assembler kode op de
+              display   wordt  getoond;  dit   mag   niet  worden
+              afgebroken en kan nogal lang duren. De  bibliotheek
+              CCLIB/IAS moet  als  laatste "gemerged" worden!  Na
+              mergen  kan een exekuteerbaar /CMD programma worden
+              weggeschreven  m.b.v. het "OO"  kommando.  Via "EX"
+              wordt IAS verlaten.
+
+     Optie 2: De mbv het "IE" kommando gelezen assembler output
+              kan  naar schijf  worden geschreven  in  het,  veel
+              kortere,  IAS  formaat.  Zulke IAS  modulen  kunnen
+              later "gelinkt" worden m.b.v. de IAS linker, of  ze
+              kunnen  gemerged  worden  met andere IAS modulen en
+              de bibliotheek CCLIB/IAS.  Het wegschrijven gebeurt
+              m.b.v.  het  "OS"  kommando.  Via  "EX"  wordt  IAS
+              verlaten.
+              Het linken tot een exekuteerbaar  programma gebeurt
+              met de bottom-up linker  "DSKLLB48/CMD". Het  laden
+              start m.b.v.  het kommando "LD";  hierbij wordt als
+              "ORIGIN" adres bij de eerste te  laden file normaal
+              "5200"  gekozen.  Een   hoger  adres  is  uiteraard
+              toegestaan.  Bij  volgende  files moet een  <ENTER>
+              gegeven worden  bij de "ORIGIN"  vraag. De gewenste
+              IAS modulen  kunnen  nu  geladen worden,  CCLIB/IAS
+              als  laatste.  Het  laden wordt  gestopt m.b.v.  de
+              BREAK toets. Het  geladen  programma kan m.b.v. het
+              "OO" kommando  als  /CMD  file  naar  schijf worden
+              geschreven.  Op   de  "FIRST  ADDRESS"  en   "FINAL
+              ADDRESS"  vragen  moet  een <ENTER> gegeven worden.
+              Het  startadres is in principe 5200, maar feitelijk
+              is elke  jump  naar  het symbool "&CCMAI"  korrekt.
+              Door  een  <ENTER> te geven  bij de vragen voor het
+              tweede segment  gaat DSKLLB48  de output  aanmaken.
+              De linker wordt verlaten m.b.v. het "JP"  kommando:
+              "402D" springt naar DOS,  "5200" start het  geladen
+              programma.
+
+
+     De  bibliotheek  CCLIB/IAS is  al  meer  malen genoemd; deze
+     bevat  alle  in  paragraaf  7.1  genoemde  modulen.  Wanneer
+     CCLIB/IAS gemerged of gelinkt wordt,  worden  alle aanwezige
+     modulen meegenomen door IAS. Zelf  editten van deze file  is
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          7. Bibliotheken      Pagina 45
+     
+     
+     vanzelfsprekend  mogelijk,   bijvoorbeeld  om  een  kleinere
+     bibliotheek  te maken, wanneer sommige routines niet gewenst
+     zijn. De  modulen PRINTF, VARIOUS en CTYPE kunnen verwijderd
+     worden,   als  er  geen  funkties  uit  die  modulen  worden
+     aangeroepen. Ten aanzien  van PRINTF hoeft de file "STDIO/H"
+     niet  gewijzigd  te  worden.  Het  module  IOLIB kan  alleen
+     verwijderd worden,  indien CCMAIN wordt  aangepast: de calls
+     naar  &GETCM en &EXIT moeten verwijderd worden. Dit betekent
+     dat er  geen  kommando  regel  analyse  en  redirektie  meer
+     plaats  vindt.  Het  module  MALLOC  kan  hierna  verwijderd
+     worden   indien  de  referentie  naar   &CURHP   in   CCMAIN
+     verwijderd  wordt.   Er  is   dan  geen   dynamisch   memory
+     management beschikbaar.
+
+
+
+     7.4: Bibliotheken en Edtasm
+          ----------------------
+
+
+     Gebruik  van Edtasm om uitvoerbare  programma's te genereren
+     is  mogelijk,  maar  er  zijn  een  aantal  beperkingen.  De
+     standaard Edtasm  eist  namelijk, dat  de komplete assembler
+     kode gekombineerd wordt en daarna in een  keer geassembleerd
+     wordt. Deze eis beperkt  de omvang van programma's. Teneinde
+     de maximum  grens  niet  te snel  te  bereiken,  is  er voor
+     gebruik   met  Edtasm  een  "run-time"   module   gekreeerd:
+     CCLIB/V20. Dit module bevat PRINTF, CCRUN, IOLIB  en MALLOC.
+     De modulen  VARIOUS en  CTYPE  kunnen separaat  gekompileerd
+     worden  (zie  paragraaf  8.4).  Het module CCMAIN/ASM  bevat
+     feitelijk alleen de interfaces  naar CCLIB/V20. Dit run-time
+     module wordt door het uitvoerbare programma zelf  opgehaald:
+     het   wordt  niet  physiek   meegelinkt.  Een  exekuteerbaar
+     programma wordt gemaakt door een C  source te kompileren met
+     behulp  van de "-e"  switch  (of  de  kompiler  moet  m.b.v.
+     CCUSTOM  zijn  aangepast  voor Edtasm). De output file wordt
+     in Edtasm geladen m.b.v. het kommando
+
+       L D=FILENAAM/ASM       (LD FILENAAM voor Edtasm/Plus)
+
+     Indien meer dan een file geladen wordt, moet steeds een  'Y'
+     geantwoord  worden  op  de vraag  of er  gekonkateneerd moet
+     worden. Altijd als laatste moet CCMAIN/ASM worden geladen:
+
+       L D=CCMAIN/ASM         (LDA CCMAIN voor Edtasm/PLus)
+
+     antwoord weer  'Y'. Met behulp van het A kommando (eventueel
+     A/NL/NS) kan nu een exekuteerbaar programma worden gemaakt:
+
+       A/NS/NL                (A OUTPUT /NS/NL voor Edtasm/Plus)
+       D
+       OUTPUT/CMD
+       Y of C
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
+
+
+     TRS-80 Small-C V2.0          Reserve              Pagina 46
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                   
+                                   
+        Copyright <C> 1984:  Mikrorie Software  --  Rotterdam
+
+
+
+
+
+
+
+
+
