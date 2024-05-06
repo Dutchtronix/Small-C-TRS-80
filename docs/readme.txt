@@ -27,3 +27,8 @@ requirements of the compiler. Defaults are:
 The compiler sources will compile using Visual Studio 2022 but
 the file cc.def must include the line #define MSC at the beginning.
 This resulting cross compiler will generate .mac files from .c files
+
+Version 2.1A of this project was originally released in 1984 when I
+still lived in The Netherlands. Some of the documentation was written
+in Dutch at the time.
+

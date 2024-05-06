@@ -136,11 +136,7 @@ char
 	 *lastp,
 	 *foutbuf;
  int
-#ifdef DYNHEAP
 	 cchpsize = -1,
-#else
-	 cchpsize = 0,
-#endif
 #ifdef MSC
 	 msccchpsize,
 #endif

@@ -1,12 +1,13 @@
 Readme file for Small-C Compiler version 2.1B for TRS-80 Model I/III running Newdos/80 2.0
 
-Emulator used: TRS80GP in Model I mode. Very complete but frequent crashes.
+Emulator used: TRS80GP in Model I mode. Very complete but some crashes. See "http://48k.ca/trs80gp.html"
+See bin\starttrs.bat for my setup.
 <br>
-trstools to transfer files between windows and TRS-80 disks
+trstools to transfer files between windows and TRS-80 disks. See "http://www.trs-80emulators.com/trstools/"
 <br>
-Editor used: Scripsit V1.0 (patched for Newdos/80)
+Editor used: Scripsit V1.0 (patched for Newdos/80). See bin subdirectory.
 <br>
-Other tools: Microsoft M80 and L80 for TRSDOS
+Other tools: Microsoft M80 and L80 for TRSDOS. See bin subdirectory.
 
  
 Compiler source Files:

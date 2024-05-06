@@ -198,17 +198,7 @@ POP	HL
 PUSH HL
 PUSH BC
 	LD	A,L
-	if 1
-	call cioupp
-	else
-; TODO call CIOUPP::
-	CP	'a'
-	JR	C,UPPR10
-	CP	'z' + 1
-	JR	NC,UPPR10
-	SUB	32
-UPPR10:
-	endif
+	CALL CIOUPP##
 	JP	CCC5##; CCSXT
 
 #endasm
