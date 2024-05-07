@@ -248,7 +248,6 @@ hier1(lval)  int lval[];
 #else
 	/*
 	** Cannot delcare a local variable to be a function in Small-C
-	** TODO there also was a global "oper" that could be used 
 	*/
 	int k, lval2[LVALSIZE];
 	int oper;

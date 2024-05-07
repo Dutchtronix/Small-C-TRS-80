@@ -19,7 +19,6 @@
 #endif
 
 #define BUGFIXES 1
-#define DYNHEAP 1
 /* #define OTHERASM 1 */
 
 /*
@@ -104,7 +103,6 @@
 **    low order 2 bits make type unique within length
 **    high order bits give length of object
 */
-/*      LABEL   0 */
 #define CCHAR   (1<<2)
 #define CINT    (BPW<<2)
 #define CDOUBLE (8<<2)
@@ -112,7 +110,6 @@
 /*
 ** possible entries for "CLASS"
 */
-/*      LABEL     0 */
 #define STATIC    1
 #define AUTOMATIC 2
 #define EXTERNAL  3
@@ -177,7 +174,6 @@
 #define INSASM 3
 #define MAXOFFSET 287
 #endif
-/* #define MAXDEFS 4000 */
 
 /*
 ** error messages file
@@ -200,12 +196,12 @@
 #define STCONT    5
 #define STASM     6
 #define STEXPR    7
-#define STDO      8 /* compile "do" logic */
-#define STFOR     9 /* compile "for" logic */
-#define STSWITCH 10 /* compile "switch/case/default" logic */
+#define STDO      8
+#define STFOR     9
+#define STSWITCH 10
 #define STCASE   11
 #define STDEF    12
-#define STGOTO   13 /* compile "goto" logic */
+#define STGOTO   13
 #define	STLABEL	 14
 
 #define ARG4 0
@@ -222,7 +218,7 @@
 /*
 ** int-code definitions
 */
-/* thise int-codes are entries in the cclib run-time */
+/* these int-codes are entries in the cclib run-time */
 #define CCGCHAR	  1		/* call ccgchar */
 #define CCGINT	  2		/* call ccgint */
 #define CCPINT	  3		/* call ccpint */

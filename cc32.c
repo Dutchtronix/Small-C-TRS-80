@@ -141,7 +141,8 @@ hier14(lval)  int lval[];
 			}
 			else if (match("(")) {           	/* function(...) */
 #ifndef XBUGFIXES
-				if (symptr == 0) callfunction(0);		/* non-standard use */
+				if (symptr == 0)
+					callfunction(0);		/* non-standard use */
 				else
 #endif
 					if (symptr[IDENT] != FUNCTION) {

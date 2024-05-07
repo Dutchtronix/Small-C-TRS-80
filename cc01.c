@@ -109,17 +109,17 @@ void getout(str) char *str;
 void openout()
 {
 	char ch, *ptr1, *ptr2;
-	if (!outfile) { 		/* no output specification */
+	if (!outfile) { 					/* no output specification */
 		ptr1 = mline; ptr2 = pline;
 		while (ch = *ptr1++ = *ptr2++) {
-			if (ch == EXTMARKER) {	/* do not copy extension */
-				--ptr1;			/* remove slash */
-				while (an(*ptr2++)) ; /* skip extension */
-				--ptr2;			/* set to non-an */
+			if (ch == EXTMARKER) {		/* do not copy extension */
+				--ptr1;					/* remove slash */
+				while (an(*ptr2++)) ;	/* skip extension */
+				--ptr2;					/* set to non-an */
 			}
 		}
 	}
-	outfile = TRUE;			/* prevent getout() calls */
+	outfile = TRUE;						/* prevent getout() calls */
 	/* if first char = NULL then output=0 (init value) */
 	if (*mline) {
 		extension(mline, assext);
@@ -205,12 +205,11 @@ void main(argc, argv) int argc;  char* argv[];
 	int i;
 	argcs = argc;
 	argvs = argv;
-/*	initheap(); now called from calloc() */
-	initExprArgs();
-
-	fputs("CC ", stderr);
-	fputs(cversie, stderr);
-	fputc('\n', stderr);
+#ifdef DEBUG
+	sout("CC ", stderr);
+	sout(cversie, stderr);
+	sout("\n", stderr);
+#endif
 /*
 ** allocate these buffers before ask() etc.
 */
@@ -222,12 +221,13 @@ void main(argc, argv) int argc;  char* argv[];
 	ask(argc, &argv);			/* get user options */
 #endif
 	openin();					/* initial input file */
-	if (eofstatus == TRUE) {
+	if (eofstatus) {
 		newerror(48); exit(ERRCODE);
 	}
 	openout();					/* open output file */
 	setops();					/* set values in op array */
-	
+	initExprArgs();				/* set expression parsing functions */
+
 	swnext=CCALLOC(SWTABSZ);
 	swend=swnext+((SWTABSZ-SWSIZ)>>1);
 
@@ -246,12 +246,7 @@ void main(argc, argv) int argc;  char* argv[];
 	litq=CCALLOC(LITABSZ);
 
 	macn=CCALLOC(MACNSIZE);
-#ifdef MSC
-	int a = (int)macn + MACNSIZE - 1;
-	msymend = (char *)a;
-#else
 	msymend = macn + MACNSIZE - 1;
-#endif
 
 	macq=CCALLOC(MACQSIZE);
 	s = "BEGIN"; msearch(s);
@@ -265,15 +260,8 @@ void main(argc, argv) int argc;  char* argv[];
 	macidx = 4;
 
 	symtab=CCALLOC(SYMTBSZ);
-#ifdef MSC
-	a = (int)symtab + (NUMLOCS * SYMAVG);
-	glbptr = (char*)a;
-	a = (int)glbptr + (numglbs * SYMMAX - 1);
-	gsymend = (char*)a;
-#else
 	glbptr = symtab + (NUMLOCS * SYMAVG);
 	gsymend = glbptr + (numglbs * SYMMAX - 1);
-#endif
 
 #ifdef MSC
 	initptrmaptable();
@@ -318,7 +306,7 @@ _MAIN:
 /*
 ** copy str1 to str2
 */
-void strcopy(str1, str2) char *str1, *str2;	/* *str2??? */
+void strcopy(str1, str2) char *str1, *str2;
 {
 #ifdef MSC
 	strcpy(str2, str1);			/* dest, src */

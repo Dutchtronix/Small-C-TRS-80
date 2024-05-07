@@ -25,7 +25,7 @@
 ** options first to help customizing
 */
 char
-	cversie[9] = "2.1B.004\0", /* for identification */
+	cversie[5] = "2.1B\0", /* for identification */
 	headers = TRUE,		/* monitor function headers? */
 	pause = TRUE,		/* pause for operator on errors? */
 #ifdef OTHERASM

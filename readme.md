@@ -81,6 +81,7 @@ l80 cc0:1,cc1:1,cc2:1,cc3:1,cc4:1,iolibcc:1,ccnew/cmd:0-n-e
 
 This creates a new compiler called ccnew.cmd
 
+Just look at the various /jcl files to automate this process.
 
 Cross compiling on Windows works only as a WIN32 app since int and pointers are mixed.
 Make sure to add #define MSC to the beginning of file cc.def.
@@ -90,7 +91,7 @@ There is a project running the CP/M versions of M80 and L80 on a PC
 (https://github.com/Konamiman/M80dotNet) but it won't generate TRS-80 /cmd files.
 
 Cross compiling will result in many warnings where ints, unsigned ints, chars and
-pointers are mixed. Small-C does not support casts so there is no way to remove
+pointers are mixed. Small-C does not support casts so there is no easy way to remove
 the warnings while maintaining a single source code base.
 
 
