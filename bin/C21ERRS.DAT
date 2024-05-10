@@ -1,0 +1,61 @@
+001no closing bracket                  
+002internal error in openin()          
+003not allowed with goto               
+004must declare first in block         
+005too many elements                   
+006must assign to char pointer or array
+007cannot assign to pointer            
+008negative size illegal               
+009] expected                          
+010illegal function or declaration     
+011no open paren                       
+012illegal argument name               
+013no comma                            
+014internal error in amatch()          
+015not an argument                     
+016no semicolon                        
+017no final }                          
+018not in switch                       
+019too many cases                      
+020multiple defaults                   
+021internal error in outbyte()         
+022not allowed with block-locals       
+023bad label                           
+024not a label                         
+025too many active loops               
+026out of context                      
+027global symbol table overflow        
+028local symbol table overflow         
+029illegal symbol                      
+030already defined                     
+031must be lvalue                      
+032no matching #if...                  
+033no quote                            
+034no apostrophe                       
+035line too long                       
+036macro name table full               
+037macro string queue full             
+038include nesting too deep            
+039staging buffer overflow             
+040illegal address                     
+041can't subscript                     
+042invalid expression                  
+043must be constant expression         
+044literal queue overflow              
+045stage not initialized               
+046illegal int_op                      
+047 expected                           
+048no input-file specified             
+049internal error in plunge            
+050not allowed in switch               
+051stage not initialized               
+052staging buffer overflow             
+053ptrmap table overflow               
+054no memory                           
+055illegal init                        e
+056unknown error                       
+057unknown error                       
+058unknown error                       
+059unknown error                       
+060unknown error                       
+123456789012345678901234567890123456789
