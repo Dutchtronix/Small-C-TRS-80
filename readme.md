@@ -1,3 +1,4 @@
+May 2024
 Readme file for Small-C Compiler version 2.1B for TRS-80 Model I/III running Newdos/80 2.0
 
 Emulator used: TRS80GP in Model I mode. Very complete but some crashes. See "http://48k.ca/trs80gp.html"
@@ -46,6 +47,7 @@ disk1 contains compiler sources
 disk2 is used in self-compilation
 <br>
 disk3 contains sample and utility files
+<br>
 <br>
 Building the compiler (on a TRS-80)
 
